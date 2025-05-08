@@ -6,8 +6,8 @@ const {
   createPeliculaController,
   updatePeliculaController,
   deletePeliculaController,
-} = require("../controllers/movies");
-const upload = require("../middlewares/upload");
+} = require("../../controllers/api/movies");
+const upload = require("../../middlewares/upload");
 
 router.get("/", getmoviesController);
 router.get("/:id", getPeliculaByIdController);

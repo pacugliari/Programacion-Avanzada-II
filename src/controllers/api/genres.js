@@ -1,4 +1,4 @@
-const { getgenres } = require("../services/genres");
+const { getgenres } = require("../../services/genres");
 
 const getgenresController = async (req, res) => {
   let genres = [];

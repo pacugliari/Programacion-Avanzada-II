@@ -1,0 +1,147 @@
+<button
+  onclick="window.history.back()"
+  class="btn btn-secondary mb-4 d-flex justify-content-center align-items-center"
+>
+  <span class="material-icons me-2">arrow_back</span> Volver
+</button>
+<form
+  action="/movies"
+  method="POST"
+  enctype="multipart/form-data"
+  class="row g-3 needs-validation"
+  novalidate
+>
+  <!-- Poster -->
+  <div class="col-md-6">
+    <label for="poster" class="form-label">Poster (*)</label>
+    <input
+      type="file"
+      class="form-control"
+      id="poster"
+      name="poster"
+      accept=".jpg"
+      required
+    />
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Título -->
+  <div class="col-md-6">
+    <label for="titulo" class="form-label">Título (*)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="titulo"
+      name="titulo"
+      required
+    />
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Resumen -->
+  <div class="col-12">
+    <label for="resumen" class="form-label">Resumen (*)</label>
+    <textarea
+      class="form-control"
+      id="resumen"
+      name="resumen"
+      rows="3"
+      required
+    ></textarea>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Categoría -->
+  <div class="col-md-4">
+    <label for="idCategoria" class="form-label">Categoría (*)</label>
+    <select id="idCategoria" name="idCategoria" class="form-select" required>
+      <option selected disabled value="">Seleccione una categoría</option>
+      <% categories.forEach(function(category) { %>
+      <option value="<%= category.idActor %>">
+        <%= category.descripcion %>
+      </option>
+      <% }); %>
+    </select>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Cantidad de Temporadas -->
+  <div class="col-md-4">
+    <label for="cantidadTemporadas" class="form-label">Temporadas (*)</label>
+    <input
+      type="number"
+      class="form-control"
+      id="cantidadTemporadas"
+      name="cantidadTemporadas"
+      min="1"
+      required
+    />
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Trailer -->
+  <div class="col-md-4">
+    <label for="trailer" class="form-label">Link de Trailer</label>
+    <input
+      type="text"
+      class="form-control"
+      id="trailer"
+      name="trailer"
+      value="N/A"
+    />
+  </div>
+
+  <!-- Géneros (múltiple) -->
+  <div class="col-md-6">
+    <label for="generos" class="form-label">Géneros (*)</label>
+    <select multiple class="form-select" id="generos" name="generos[]" required>
+      <% genres.forEach(function(genre) { %>
+      <option value="<%= genre.idGenero %>"><%= genre.descripcion %></option>
+      <% }); %>
+    </select>
+    <small class="text-muted"
+      >Ctrl (Windows) o Cmd (Mac) para selección múltiple</small
+    >
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Actores (múltiple) -->
+  <div class="col-md-6">
+    <label for="actores" class="form-label">Actores (*)</label>
+    <select multiple class="form-select" id="actores" name="actores[]" required>
+      <% actors.forEach(function(actor) { %>
+      <option value="<%= actor.idActor %>"><%= actor.nombre %></option>
+      <% }); %>
+    </select>
+    <small class="text-muted"
+      >Ctrl (Windows) o Cmd (Mac) para selección múltiple</small
+    >
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <!-- Botón -->
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Guardar Película</button>
+  </div>
+</form>
+
+<script>
+  // JavaScript para habilitar la validación de Bootstrap
+  (function () {
+    "use strict";
+    var forms = document.querySelectorAll(".needs-validation");
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+</script>

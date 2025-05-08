@@ -1,4 +1,4 @@
-const { getcategories } = require("../services/categories");
+const { getcategories } = require("../../services/categories");
 
 const getcategoriesController = async (req, res) => {
   let categories = [];

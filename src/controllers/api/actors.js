@@ -1,4 +1,4 @@
-const { getactors } = require("../services/actors");
+const { getactors } = require("../../services/actors");
 
 const getactorsController = async (req, res) => {
   let actors = [];

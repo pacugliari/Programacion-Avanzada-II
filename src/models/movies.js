@@ -44,7 +44,7 @@ const create = async (data) => {
     await connection.beginTransaction();
 
     const [result] = await connection.query(
-      `INSERT INTO movies (titulo, resumen, poster, idCategoria, cantidadTemporadas) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO peliculas (titulo, resumen, poster, idCategoria, cantidadTemporadas) VALUES (?, ?, ?, ?, ?)`,
       [titulo, resumen, poster, idCategoria, cantidadTemporadas ?? "N/A"]
     );
 
@@ -52,21 +52,21 @@ const create = async (data) => {
 
     for (const idActor of actors) {
       await connection.query(
-        `INSERT INTO moviesrepartos (idPelicula, idActor) VALUES (?, ?)`,
+        `INSERT INTO peliculasrepartos (idPelicula, idActor) VALUES (?, ?)`,
         [idPelicula, idActor]
       );
     }
 
     for (const idGenero of genres) {
       await connection.query(
-        `INSERT INTO moviesgenres (idPelicula, idGenero) VALUES (?, ?)`,
+        `INSERT INTO peliculasgeneros (idPelicula, idGenero) VALUES (?, ?)`,
         [idPelicula, idGenero]
       );
     }
 
     const trailerUrl = trailer || "N/A";
     await connection.query(
-      `INSERT INTO moviestrailers (idPelicula, trailer) VALUES (?, ?)`,
+      `INSERT INTO peliculastrailers (idPelicula, trailer) VALUES (?, ?)`,
       [idPelicula, trailerUrl]
     );
 
@@ -86,17 +86,20 @@ const deleteOne = async (id) => {
   try {
     await connection.beginTransaction();
 
-    await connection.query(`DELETE FROM moviesrepartos WHERE idPelicula = ?`, [
-      id,
-    ]);
-    await connection.query(`DELETE FROM moviesgenres WHERE idPelicula = ?`, [
-      id,
-    ]);
-    await connection.query(`DELETE FROM moviestrailers WHERE idPelicula = ?`, [
-      id,
-    ]);
+    await connection.query(
+      `DELETE FROM peliculasrepartos WHERE idPelicula = ?`,
+      [id]
+    );
+    await connection.query(
+      `DELETE FROM peliculasgeneros WHERE idPelicula = ?`,
+      [id]
+    );
+    await connection.query(
+      `DELETE FROM peliculastrailers WHERE idPelicula = ?`,
+      [id]
+    );
     const [result] = await connection.query(
-      `DELETE FROM movies WHERE idPelicula = ?`,
+      `DELETE FROM peliculas WHERE idPelicula = ?`,
       [id]
     );
 
@@ -129,39 +132,42 @@ const update = async (id, data) => {
     await connection.beginTransaction();
 
     await connection.query(
-      `UPDATE movies SET titulo = ?, resumen = ?, poster = ?, idCategoria = ?, cantidadTemporadas = ? WHERE idPelicula = ?`,
+      `UPDATE peliculas SET titulo = ?, resumen = ?, poster = ?, idCategoria = ?, cantidadTemporadas = ? WHERE idPelicula = ?`,
       [titulo, resumen, poster, idCategoria, cantidadTemporadas ?? "N/A", id]
     );
 
     // Limpiar relaciones previas
-    await connection.query(`DELETE FROM moviesrepartos WHERE idPelicula = ?`, [
-      id,
-    ]);
-    await connection.query(`DELETE FROM moviesgenres WHERE idPelicula = ?`, [
-      id,
-    ]);
-    await connection.query(`DELETE FROM moviestrailers WHERE idPelicula = ?`, [
-      id,
-    ]);
+    await connection.query(
+      `DELETE FROM peliculasrepartos WHERE idPelicula = ?`,
+      [id]
+    );
+    await connection.query(
+      `DELETE FROM peliculasgeneros WHERE idPelicula = ?`,
+      [id]
+    );
+    await connection.query(
+      `DELETE FROM peliculastrailers WHERE idPelicula = ?`,
+      [id]
+    );
 
     // Insertar nuevas relaciones
     for (const idActor of actors) {
       await connection.query(
-        `INSERT INTO moviesrepartos (idPelicula, idActor) VALUES (?, ?)`,
+        `INSERT INTO peliculasrepartos (idPelicula, idActor) VALUES (?, ?)`,
         [id, idActor]
       );
     }
 
     for (const idGenero of genres) {
       await connection.query(
-        `INSERT INTO moviesgenres (idPelicula, idGenero) VALUES (?, ?)`,
+        `INSERT INTO peliculasgeneros (idPelicula, idGenero) VALUES (?, ?)`,
         [id, idGenero]
       );
     }
 
     const trailerUrl = trailer || "N/A";
     await connection.query(
-      `INSERT INTO moviestrailers (idPelicula, trailer) VALUES (?, ?)`,
+      `INSERT INTO peliculastrailers (idPelicula, trailer) VALUES (?, ?)`,
       [id, trailerUrl]
     );
 

@@ -6,7 +6,7 @@ const {
   createPelicula,
   updatePelicula,
   deletePelicula,
-} = require("../services/movies");
+} = require("../../services/movies");
 
 const getmoviesController = async (req, res) => {
   let movies = [];
