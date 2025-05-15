@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const moviesController = require("../../controllers/monolith/movies");
+const upload = require("../../middlewares/upload");
 
 router.get("/", moviesController.index);
-router.get("/create", moviesController.create);
+router.get("/create", moviesController.createForm);
 router.get("/delete/:id", moviesController.delete);
 router.get("/:id", moviesController.detail);
+router.post("/", upload.single("poster"), moviesController.create);
 
 module.exports = router;

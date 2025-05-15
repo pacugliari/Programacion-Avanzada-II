@@ -8,6 +8,7 @@ const monolithMoviesRoutes = require("./src/routes/monolith/movies");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const path = require("path");
+const fs = require("fs");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,9 +28,30 @@ app.use("/posters", express.static(path.join(__dirname, "public", "posters")));
 //MONOLITH
 app.use("/movies", monolithMoviesRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({
-    message: "La URL indicada no existe en este servidor",
+//RUTAS DE ERROR
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log interno
+
+  const statusCode = err.status || 500;
+  const title = err.title || "Error";
+  const message =
+    err.message || "Se ha generado un error inesperado en el servidor.";
+
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(statusCode).json({
+      error: true,
+      message,
+    });
+  }
+
+  if (req.file && req.file.path) {
+    fs.unlink(req.file.path, () => {});
+  }
+
+  res.status(statusCode).render("error", {
+    code: statusCode,
+    message,
+    title,
   });
 });
 

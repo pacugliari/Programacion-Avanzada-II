@@ -1,0 +1,19 @@
+<button
+  onclick="window.location.href='/movies'"
+  class="btn btn-secondary mb-4 d-flex justify-content-center align-items-center"
+>
+  <span class="material-icons me-2">arrow_back</span> Volver
+</button>
+<div
+  class="alert alert-danger text-center my-5 p-4 rounded shadow"
+  role="alert"
+>
+  <div class="mb-3">
+    <i
+      class="bi bi-exclamation-triangle-fill"
+      style="font-size: 4rem; color: #dc3545"
+    ></i>
+  </div>
+  <h4 class="alert-heading">Error <%= code %></h4>
+  <p><%= message %></p>
+</div>

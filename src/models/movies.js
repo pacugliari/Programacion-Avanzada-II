@@ -28,10 +28,10 @@ const getOne = async (params) => {
 
 const create = async (data) => {
   const {
-    titulo,
-    resumen,
+    title,
+    summary,
     poster,
-    idCategoria,
+    category_id,
     actors,
     genres,
     cantidadTemporadas,
@@ -45,7 +45,7 @@ const create = async (data) => {
 
     const [result] = await connection.query(
       `INSERT INTO peliculas (titulo, resumen, poster, idCategoria, cantidadTemporadas) VALUES (?, ?, ?, ?, ?)`,
-      [titulo, resumen, poster, idCategoria, cantidadTemporadas ?? "N/A"]
+      [title, summary, poster, category_id, cantidadTemporadas ?? "N/A"]
     );
 
     const idPelicula = result.insertId;

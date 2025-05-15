@@ -1,5 +1,5 @@
 <button
-  onclick="window.history.back()"
+  onclick="window.location.href='/movies'"
   class="btn btn-secondary mb-4 d-flex justify-content-center align-items-center"
 >
   <span class="material-icons me-2">arrow_back</span> Volver
@@ -27,12 +27,12 @@
 
   <!-- Título -->
   <div class="col-md-6">
-    <label for="titulo" class="form-label">Título (*)</label>
+    <label for="title" class="form-label">Título (*)</label>
     <input
       type="text"
       class="form-control"
-      id="titulo"
-      name="titulo"
+      id="title"
+      name="title"
       required
     />
     <div class="invalid-feedback">Este campo es requerido</div>
@@ -40,11 +40,11 @@
 
   <!-- Resumen -->
   <div class="col-12">
-    <label for="resumen" class="form-label">Resumen (*)</label>
+    <label for="summary" class="form-label">Resumen (*)</label>
     <textarea
       class="form-control"
-      id="resumen"
-      name="resumen"
+      id="summary"
+      name="summary"
       rows="3"
       required
     ></textarea>
@@ -53,11 +53,11 @@
 
   <!-- Categoría -->
   <div class="col-md-4">
-    <label for="idCategoria" class="form-label">Categoría (*)</label>
-    <select id="idCategoria" name="idCategoria" class="form-select" required>
+    <label for="category_id" class="form-label">Categoría (*)</label>
+    <select id="category_id" name="category_id" class="form-select" required>
       <option selected disabled value="">Seleccione una categoría</option>
       <% categories.forEach(function(category) { %>
-      <option value="<%= category.idActor %>">
+      <option value="<%= category.idCategoria %>">
         <%= category.descripcion %>
       </option>
       <% }); %>
@@ -93,8 +93,8 @@
 
   <!-- Géneros (múltiple) -->
   <div class="col-md-6">
-    <label for="generos" class="form-label">Géneros (*)</label>
-    <select multiple class="form-select" id="generos" name="generos[]" required>
+    <label for="genres" class="form-label">Géneros (*)</label>
+    <select multiple class="form-select" id="genres" name="genres[]" required>
       <% genres.forEach(function(genre) { %>
       <option value="<%= genre.idGenero %>"><%= genre.descripcion %></option>
       <% }); %>
@@ -107,8 +107,8 @@
 
   <!-- Actores (múltiple) -->
   <div class="col-md-6">
-    <label for="actores" class="form-label">Actores (*)</label>
-    <select multiple class="form-select" id="actores" name="actores[]" required>
+    <label for="actors" class="form-label">Actores (*)</label>
+    <select multiple class="form-select" id="actors" name="actors[]" required>
       <% actors.forEach(function(actor) { %>
       <option value="<%= actor.idActor %>"><%= actor.nombre %></option>
       <% }); %>

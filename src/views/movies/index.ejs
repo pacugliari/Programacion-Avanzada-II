@@ -1,5 +1,8 @@
 <!-- Contenedor de los botones -->
-<div class="mb-4 d-flex justify-content-between">
+<div
+  class="mb-4 d-flex justify-content-between position-sticky p-2"
+  style="top: 0; z-index: 1000; background: white"
+>
   <h1>Películas</h1>
   <div class="d-flex">
     <button
@@ -25,7 +28,9 @@
   </div>
 </div>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+<div
+  class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 me-2 ms-2"
+>
   <% movies.forEach(movie => { %>
   <div class="col">
     <div
@@ -56,6 +61,20 @@
   <% }) %>
 </div>
 
+<% if (typeof successMessage !== "undefined") { %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    Swal.fire({
+      icon: "success",
+      title: "¡Éxito!",
+      text: "<%= successMessage %>",
+      confirmButtonText: "Aceptar",
+    });
+  });
+</script>
+<% } %>
+
 <!-- Material Icons -->
 <link
   href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -63,37 +82,25 @@
 />
 
 <script>
-  // Variable para almacenar la ID de la película seleccionada
   let selectedMovieId = null;
-
-  document.getElementById("btnCreate").onclick = function () {
-    window.location.href = `/movies/create`;
-  };
-
-  // Activar los botones al seleccionar una película
   document.querySelectorAll(".movie-card").forEach((card) => {
     card.addEventListener("click", function () {
-      // Prevenir que el clic simple navegue a la página de detalle
       event.stopPropagation();
-
-      // Remover la clase 'selected-card' de todas las tarjetas
       document
         .querySelectorAll(".movie-card")
         .forEach((c) => c.classList.remove("selected-card"));
 
-      // Agregar la clase 'selected-card' a la tarjeta seleccionada
       this.classList.add("selected-card");
-
-      // Habilitar los botones de Modificar y Eliminar
       selectedMovieId = this.getAttribute("data-movie-id");
       document.getElementById("btnModify").disabled = false;
       document.getElementById("btnDelete").disabled = false;
 
-      // Funcionalidad para los botones de Modificar y Eliminar
+      // Update
       document.getElementById("btnModify").onclick = function () {
         window.location.href = `/movies/edit/${selectedMovieId}`;
       };
 
+      // Delete
       document.getElementById("btnDelete").onclick = function () {
         Swal.fire({
           title: "¿Estás seguro de que quieres eliminar esta película?",
@@ -104,29 +111,29 @@
           cancelButtonText: "Cancelar",
         }).then((result) => {
           if (result.isConfirmed) {
-            // Enviar la solicitud de eliminación (puedes usar fetch o una redirección)
             window.location.href = `/movies/delete/${selectedMovieId}`;
           }
         });
       };
     });
 
-    // Doble clic para navegar al detalle
-    card.addEventListener("dblclick", function () {
-      // Obtener la ID de la película seleccionada
-      selectedMovieId = this.getAttribute("data-movie-id");
+    // Create
+    document.getElementById("btnCreate").onclick = function () {
+      window.location.href = `/movies/create`;
+    };
 
-      // Redirigir al detalle de la película
+    //  Detail
+    card.addEventListener("dblclick", function () {
+      selectedMovieId = this.getAttribute("data-movie-id");
       window.location.href = `/movies/${selectedMovieId}`;
     });
   });
 </script>
 
 <style>
-  /* Estilo para las tarjetas seleccionadas */
   .selected-card {
-    border: 2px solid #007bff; /* Borde azul */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Efecto de sombra azul */
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
   }
 
   .movie-poster {
