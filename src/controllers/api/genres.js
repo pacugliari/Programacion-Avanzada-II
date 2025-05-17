@@ -1,12 +1,9 @@
-const { getgenres } = require("../../services/genres");
+const { getGenres } = require("../../services/genres");
 
-const getgenresController = async (req, res) => {
-  let genres = [];
-
-  genres = await getgenres();
-  res.status(200).json({ payload: genres });
+const getGenresController = async (req, res) => {
+  res.status(200).json({ payload: await getGenres() });
 };
 
 module.exports = {
-  getgenresController,
+  getGenresController,
 };

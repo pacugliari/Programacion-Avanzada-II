@@ -1,12 +1,9 @@
-const { getcategories } = require("../../services/categories");
+const { getCategories } = require("../../services/categories");
 
-const getcategoriesController = async (req, res) => {
-  let categories = [];
-
-  categories = await getcategories();
-  res.status(200).json({ payload: categories });
+const getCategoriesController = async (req, res) => {
+  res.status(200).json({ payload: await getCategories() });
 };
 
 module.exports = {
-  getcategoriesController,
+  getCategoriesController,
 };

@@ -9,6 +9,8 @@ const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const path = require("path");
 const fs = require("fs");
+const { getMovies } = require("./src/services/movies");
+const methodOverride = require('method-override');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,6 +19,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 app.use(expressLayouts);
 app.set("layout", "./layout");
+app.use(methodOverride('_method'));
 
 //API
 app.use("/api/movies", moviesRoutes);
@@ -29,7 +32,7 @@ app.use("/posters", express.static(path.join(__dirname, "public", "posters")));
 app.use("/movies", monolithMoviesRoutes);
 
 //RUTAS DE ERROR
-app.use((err, req, res, next) => {
+app.use(async (err, req, res, next) => {
   console.error(err.stack); // Log interno
 
   const statusCode = err.status || 500;
@@ -48,11 +51,16 @@ app.use((err, req, res, next) => {
     fs.unlink(req.file.path, () => {});
   }
 
-  res.status(statusCode).render("error", {
-    code: statusCode,
-    message,
-    title,
+  res.status(statusCode).render("movies/index", {
+    movies: await getMovies(req),
+    title: "Lista de películas",
+    errorMessage: message,
+    errorCode: statusCode,
   });
+});
+
+app.use("/", (req, res) => {
+  res.redirect("/movies");
 });
 
 app.listen(process.env.PORT, () => {

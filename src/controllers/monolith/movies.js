@@ -1,64 +1,72 @@
-const { getactors } = require("../../services/actors");
-const { getcategories } = require("../../services/categories");
-const { getgenres } = require("../../services/genres");
+const { getActors } = require("../../services/actors");
+const { getCategories } = require("../../services/categories");
+const { getGenres } = require("../../services/genres");
 const {
-  getmovies,
-  getPeliculaById,
-  createPelicula,
-  updatePelicula,
-  deletePelicula,
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  deleteMovie,
 } = require("../../services/movies");
-const HttpError = require("../../utils/HttpError");
 
 exports.index = async (req, res) => {
-  let movies = await getmovies(req);
-  res.render("movies/index", { movies, title: "Lista de peliculas" });
+  res.render("movies/index", {
+    movies: await getMovies(req),
+    title: "Lista de peliculas",
+  });
 };
 
 exports.detail = async (req, res) => {
-  const pelicula = await getPeliculaById(req);
-
-  if (!pelicula) {
-    throw new HttpError(400, "El ID no corresponde a una pelicula registrada");
-  }
-
   res.render("movies/detail", {
-    movie: pelicula,
+    movie: await getMovieById(req),
     title: "Detalle de pelicula",
   });
 };
 
 exports.createForm = async (req, res) => {
-  let actors = [];
-  let categories = [];
-  let genres = [];
-
-  actors = await getactors();
-  categories = await getcategories();
-  genres = await getgenres();
   res.render("movies/create", {
     title: "Crear pelicula",
-    actors,
-    genres,
-    categories,
+    actors: await getActors(),
+    genres: await getGenres(),
+    categories: await getCategories(),
+  });
+};
+
+exports.editForm = async (req, res) => {
+  res.render("movies/edit", {
+    title: "Editar pelicula",
+    actors: await getActors(),
+    genres: await getGenres(),
+    categories: await getCategories(),
+    movie: await getMovieById(req),
   });
 };
 
 exports.create = async (req, res) => {
-  await createPelicula(req);
+  await createMovie(req);
 
   res.status(201).render("movies/index", {
-    movies: await getmovies(req),
+    movies: await getMovies(req),
     title: "Lista de películas",
     successMessage: "Película creada exitosamente",
   });
 };
 
+exports.edit = async (req, res) => {
+  await updateMovie(req);
+
+  res.status(201).render("movies/index", {
+    movies: await getMovies(req),
+    title: "Lista de películas",
+    successMessage: "Película modificada exitosamente",
+  });
+};
+
 exports.delete = async (req, res) => {
-  await deletePelicula(req);
+  await deleteMovie(req);
 
   res.status(200).render("movies/index", {
-    movies: await getmovies(req),
+    movies: await getMovies(req),
     title: "Lista de películas",
     successMessage: "Película borrada exitosamente",
   });

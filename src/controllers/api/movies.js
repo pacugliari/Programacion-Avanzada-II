@@ -1,45 +1,41 @@
 const {
-  getmovies,
-  getPeliculaById,
-  createPelicula,
-  updatePelicula,
-  deletePelicula,
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  deleteMovie,
 } = require("../../services/movies");
 
-const getmoviesController = async (req, res) => {
-  let movies = await getmovies(req);
-  res.status(200).json({ payload: movies });
+const getMoviesController = async (req, res) => {
+  res.status(200).json({ payload: await getMovies(req) });
 };
 
-const getPeliculaByIdController = async (req, res) => {
-  const pelicula = await getPeliculaById(req);
-
-  res.status(200).json({ payload: pelicula });
+const getMovieByIdController = async (req, res) => {
+  res.status(200).json({ payload: await getMovieById(req) });
 };
 
-const createPeliculaController = async (req, res) => {
-  const pelicula = await createPelicula(req);
-  res.status(201).json({ message: "Película creada", payload: pelicula });
+const createMovieController = async (req, res) => {
+  res
+    .status(201)
+    .json({ message: "Película creada", payload: await createMovie(req) });
 };
 
-const updatePeliculaController = async (req, res) => {
-  const updated = await updatePelicula(req);
-
+const updateMovieController = async (req, res) => {
   res.status(200).json({
     message: "Película actualizada",
-    payload: updated,
+    payload: await updateMovie(req),
   });
 };
 
-const deletePeliculaController = async (req, res) => {
-  await deletePelicula(pelicula);
+const deleteMovieController = async (req, res) => {
+  await deleteMovie(pelicula);
   res.status(200).json({ message: "Pelicula eliminada" });
 };
 
 module.exports = {
-  getmoviesController,
-  getPeliculaByIdController,
-  createPeliculaController,
-  updatePeliculaController,
-  deletePeliculaController,
+  getMoviesController,
+  getMovieByIdController,
+  createMovieController,
+  updateMovieController,
+  deleteMovieController,
 };

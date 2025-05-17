@@ -1,9 +1,9 @@
 const categories = require("../models/categories");
 
-const getcategories = async () => {
+const getCategories = async () => {
   return await categories.getAll();
 };
 
 module.exports = {
-  getcategories,
+  getCategories,
 };

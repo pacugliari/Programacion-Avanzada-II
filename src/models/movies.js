@@ -3,7 +3,7 @@ const { conn } = require("../config/conn");
 const getAll = async () => {
   try {
     const [rows, fields] = await conn.query("SELECT * FROM catalogo;");
-    return rows;
+    return rows ?? [];
   } catch (error) {
     throw error;
   } finally {
@@ -116,10 +116,10 @@ const deleteOne = async (id) => {
 
 const update = async (id, data) => {
   const {
-    titulo,
-    resumen,
+    title,
+    summary,
     poster,
-    idCategoria,
+    category_id,
     actors,
     genres,
     cantidadTemporadas,
@@ -133,7 +133,7 @@ const update = async (id, data) => {
 
     await connection.query(
       `UPDATE peliculas SET titulo = ?, resumen = ?, poster = ?, idCategoria = ?, cantidadTemporadas = ? WHERE idPelicula = ?`,
-      [titulo, resumen, poster, idCategoria, cantidadTemporadas ?? "N/A", id]
+      [title, summary, poster, category_id, cantidadTemporadas ?? "N/A", id]
     );
 
     // Limpiar relaciones previas

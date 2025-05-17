@@ -13,8 +13,8 @@ const validarDatosPelicula = async (data) => {
     throw new Error("El título debe ser un string de hasta 70 caracteres.");
   }
 
-  if (typeof summary !== "string" || summary.length > 255) {
-    throw new Error("El resumen debe ser un string de hasta 255 caracteres.");
+  if (typeof summary !== "string" || summary.length > 500) {
+    throw new Error("El resumen debe ser un string de hasta 500 caracteres.");
   }
 
   if (typeof poster !== "string" || !poster.toLowerCase().endsWith(".jpg")) {
@@ -47,18 +47,21 @@ const validarDatosPelicula = async (data) => {
   }
 };
 
-const getmovies = async (req) => {
+const getMovies = async (req) => {
   const host = req.headers.host;
   const movies = await moviesModel.getAll();
   return movies
     ? movies.map((p) => ({
         ...p,
         poster: `http://${host}${p.poster}`,
+        reparto: JSON.parse(p.reparto),
+        generos: JSON.parse(p.generos),
+        categoria: JSON.parse(p.categoria),
       }))
     : [];
 };
 
-const getPeliculaById = async (req) => {
+const getMovieById = async (req) => {
   const { id } = req.params;
   const pelicula = await moviesModel.getOne({ id });
   const host = req.headers.host;
@@ -69,10 +72,13 @@ const getPeliculaById = async (req) => {
   return {
     ...pelicula,
     poster: `http://${host}${pelicula.poster}`,
+    reparto: JSON.parse(pelicula.reparto),
+    generos: JSON.parse(pelicula.generos),
+    categoria: JSON.parse(pelicula.categoria),
   };
 };
 
-const createPelicula = async (req) => {
+const createMovie = async (req) => {
   const { title, category_id, summary, genres, actors } = req.body;
   if (!req.file) {
     throw new HttpError(400, "Falta la imagen del poster");
@@ -96,22 +102,18 @@ const createPelicula = async (req) => {
   return await moviesModel.create(data);
 };
 
-const updatePelicula = async (req) => {
+const updateMovie = async (req) => {
   const { id } = req.params;
-  const { titulo, idCategoria, resumen, genres, actors } = req.body;
+  const { title, category_id, summary, genres, actors } = req.body;
 
-  if (!req.file) {
-    throw new HttpError(400, "Falta la imagen del poster");
-  }
-
-  if (!titulo || !idCategoria || !resumen || !genres || !actors) {
+  if (!title || !category_id || !summary || !genres || !actors) {
     if (req.file && req.file.path) {
       fs.unlink(req.file.path, () => {});
     }
     throw new HttpError(400, "Faltan datos relevantes");
   }
 
-  const pelicula = await getPeliculaById(req);
+  const pelicula = await getMovieById(req);
 
   if (!pelicula) {
     if (req.file && req.file.path) {
@@ -120,6 +122,52 @@ const updatePelicula = async (req) => {
     throw new HttpError(400, "El ID no corresponde a una película registrada");
   }
 
+  if (pelicula.blocked) {
+    throw new HttpError(
+      409,
+      "Esta pelicula no se puede modificar porque está bloqueada"
+    );
+  }
+
+  if (!pelicula.poster && !req.file) {
+    throw new HttpError(400, "Falta la imagen del poster");
+  }
+
+  let posterPath = `/posters/${pelicula.poster.split("/").pop()}`;
+  if (req.file) {
+    const oldPosterPath = path.join(
+      "public",
+      "posters",
+      pelicula.poster.split("/").pop()
+    );
+
+    if (fs.existsSync(oldPosterPath)) {
+      fs.unlinkSync(oldPosterPath);
+    }
+
+    posterPath += `/posters/${req.file.filename}`;
+  }
+
+  const data = {
+    ...req.body,
+    category_id: Number(category_id),
+    poster: `${posterPath}`,
+    genres: Array.isArray(genres) ? genres.map(Number) : [Number(genres)],
+    actors: Array.isArray(actors) ? actors.map(Number) : [Number(actors)],
+  };
+  await validarDatosPelicula(data);
+  return await moviesModel.update(id, data);
+};
+
+const deleteMovie = async (req) => {
+  const pelicula = await getMovieById(req);
+
+  if (pelicula.blocked) {
+    throw new HttpError(
+      409,
+      "Esta pelicula no se puede eliminar porque está bloqueada"
+    );
+  }
   const oldPosterPath = path.join(
     "public",
     "posters",
@@ -130,41 +178,13 @@ const updatePelicula = async (req) => {
     fs.unlinkSync(oldPosterPath);
   }
 
-  const posterPath = `/posters/${req.file.filename}`;
-
-  const data = {
-    ...req.body,
-    idCategoria: Number(idCategoria),
-    poster: `${posterPath}`,
-    genres: JSON.parse(genres),
-    actors: JSON.parse(actors),
-  };
-  await validarDatosPelicula(data);
-  return await moviesModel.update(id, data);
-};
-
-const deletePelicula = async (req) => {
-  const pelicula = await getPeliculaById(req);
-
-  if(pelicula.blocked) {
-    throw new HttpError(
-      409,
-      "Esta pelicula no se puede eliminar porque está bloqueada"
-    );
-  }
-  const oldPosterPath = path.join("public", "posters", poster.split("/").pop());
-
-  if (fs.existsSync(oldPosterPath)) {
-    fs.unlinkSync(oldPosterPath);
-  }
-
-  return await moviesModel.deleteOne(id);
+  return await moviesModel.deleteOne(pelicula.id);
 };
 
 module.exports = {
-  getmovies,
-  getPeliculaById,
-  createPelicula,
-  updatePelicula,
-  deletePelicula,
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  deleteMovie,
 };

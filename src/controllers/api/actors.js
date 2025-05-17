@@ -1,12 +1,9 @@
-const { getactors } = require("../../services/actors");
+const { getActors } = require("../../services/actors");
 
-const getactorsController = async (req, res) => {
-  let actors = [];
-
-  actors = await getactors();
-  res.status(200).json({ payload: actors });
+const getActorsController = async (req, res) => {
+  res.status(200).json({ payload: await getActors() });
 };
 
 module.exports = {
-  getactorsController,
+  getActorsController,
 };

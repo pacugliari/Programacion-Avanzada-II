@@ -5,8 +5,10 @@ const upload = require("../../middlewares/upload");
 
 router.get("/", moviesController.index);
 router.get("/create", moviesController.createForm);
+router.get("/edit/:id", moviesController.editForm);
 router.get("/delete/:id", moviesController.delete);
 router.get("/:id", moviesController.detail);
 router.post("/", upload.single("poster"), moviesController.create);
+router.put("/:id", upload.single("poster"), moviesController.edit);
 
 module.exports = router;

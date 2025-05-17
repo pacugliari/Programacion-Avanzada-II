@@ -48,12 +48,15 @@
         </div>
       </span>
       <div class="card-body">
-        <h5 class="card-title text-center">
-          <span
-            href="/movies/<%= movie.id %>"
-            class="text-decoration-none text-dark"
-            ><%= movie.titulo %></span
+        <h5
+          class="card-title text-center d-flex justify-content-center align-items-center gap-2"
+        >
+          <span class="text-dark"><%= movie.titulo %></span>
+          <% if (movie.blocked) { %>
+          <span class="material-icons text-danger" title="Película bloqueada"
+            >lock</span
           >
+          <% } %>
         </h5>
       </div>
     </div>
@@ -70,6 +73,27 @@
       title: "¡Éxito!",
       text: "<%= successMessage %>",
       confirmButtonText: "Aceptar",
+    }).then((result) => {
+      window.location.href = "/";
+    });
+  });
+</script>
+<% } %> <% if (typeof errorMessage !== "undefined" && errorCode !== "undefined")
+{ %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let titleText = "¡Error!";
+    let fullMessage = "<%= errorMessage %>";
+
+    Swal.fire({
+      icon: "error",
+      title: "Error: <%= errorCode %>",
+      html: fullMessage,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      window.location.href = "/";
     });
   });
 </script>

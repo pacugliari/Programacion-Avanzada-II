@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getmoviesController,
-  getPeliculaByIdController,
-  createPeliculaController,
-  updatePeliculaController,
-  deletePeliculaController,
+  getMoviesController,
+  getMovieByIdController,
+  createMovieController,
+  updateMovieController,
+  deleteMovieController,
 } = require("../../controllers/api/movies");
 const upload = require("../../middlewares/upload");
 
-router.get("/", getmoviesController);
-router.get("/:id", getPeliculaByIdController);
-router.post("/", upload.single("poster"), createPeliculaController);
-router.put("/:id", upload.single("poster"), updatePeliculaController);
-router.delete("/:id", deletePeliculaController);
+router.get("/", getMoviesController);
+router.get("/:id", getMovieByIdController);
+router.post("/", upload.single("poster"), createMovieController);
+router.put("/:id", upload.single("poster"), updateMovieController);
+router.delete("/:id", deleteMovieController);
 
 module.exports = router;

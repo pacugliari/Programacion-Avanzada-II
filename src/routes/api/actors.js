@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { getactorsController } = require("../../controllers/api/actors");
+const { getActorsController } = require("../../controllers/api/actors");
 
-router.get("/", getactorsController);
+router.get("/", getActorsController);
 
 module.exports = router;
