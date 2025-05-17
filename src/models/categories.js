@@ -3,7 +3,7 @@ const { conn } = require("../config/conn");
 const getAll = async () => {
   try {
     const [rows, fields] = await conn.query("SELECT * FROM categorias;");
-    return rows;
+    return rows ?? [];
   } catch (error) {
     throw error;
   } finally {

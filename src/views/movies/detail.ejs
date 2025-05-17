@@ -1,0 +1,48 @@
+<div
+  class="mb-4 d-flex align-items-center position-sticky p-2"
+  style="top: 0; z-index: 1000; background: white"
+>
+  <div class="d-flex">
+    <button
+      onclick="window.location.href='/movies'"
+      class="btn btn-secondary d-flex justify-content-center align-items-center"
+    >
+      <span class="material-icons me-2">arrow_back</span>
+    </button>
+  </div>
+  <h1 class="ms-3">Detalle Pelicula</h1>
+</div>
+
+<h1 class="mb-4 text-center"><%= movie.titulo %></h1>
+
+<div class="text-center mb-4">
+  <img
+    src="<%= movie.poster %>"
+    alt="Poster de <%= movie.titulo %>"
+    class="img-fluid"
+    style="max-width: auto; height: 20rem"
+  />
+</div>
+
+<p><strong>Categoría:</strong> <%= movie.categoria[0].descripcion %></p>
+<p><strong>Géneros:</strong>
+  <% movie.generos.forEach(function(genero, index) { %>
+    <%= genero.descripcion %><%= index < movie.generos.length - 1 ? ', ' : '' %>
+  <% }); %>
+</p>
+<p><strong>Resumen:</strong> <span><%= movie.resumen %></span></p>
+<p><strong>Temporadas:</strong> <span><%= movie.temporadas %></span></p>
+<p><strong>Reparto:</strong>
+  <% movie.reparto.forEach(function(actor, index) { %>
+    <%= actor.nombre %><%= index < movie.reparto.length - 1 ? ', ' : '' %>
+  <% }); %>
+</p>
+
+<% if (movie.trailer && movie.trailer !== 'N/A') { %>
+<p>
+  <strong>Trailer:</strong>
+  <a href="<%= movie.trailer %>" target="_blank" class="btn btn-primary btn-sm"
+    >Ver trailer</a
+  >
+</p>
+<% } %>

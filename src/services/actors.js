@@ -1,9 +1,9 @@
 const actors = require("../models/actors");
 
-const getactors = async () => {
+const getActors = async () => {
   return await actors.getAll();
 };
 
 module.exports = {
-  getactors,
+  getActors,
 };
