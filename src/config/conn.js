@@ -16,7 +16,7 @@ pool.getConnection((error, connection) => {
   if (error) {
     console.log("Hubo un error de conexión", error);
   } else {
-    console.log("Conexión a la base de datos fue exitosa.");
+    console.log("✅ Conexión a la base de datos fue exitosa.");
     connection.release();
   }
 });
