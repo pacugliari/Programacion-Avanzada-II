@@ -4,7 +4,7 @@ const genresModel = require("../models/genres");
 const actorsModel = require("../models/actors");
 const fs = require("fs");
 const path = require("path");
-const HttpError = require("../utils/HttpError");
+const HttpError = require("../utils/http-error");
 
 const validarDatosPelicula = async (data) => {
   const { title, category_id, summary, poster, genres, actors } = data;
