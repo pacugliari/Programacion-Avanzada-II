@@ -17,15 +17,17 @@ const categoriesRoutes = require("./src/routes/api/categories");
 
 // Rutas Monolito (views)
 const monolithMoviesRoutes = require("./src/routes/monolith/movies");
+const monolithAuthRoutes = require("./src/routes/monolith/auth");
 
 // Middleware de errores
 const errorHandler = require("./src/middlewares/http-error");
 const auth = require("./src/middlewares/auth");
+const { sessionMiddleware, userState } = require("./src/middlewares/session");
 
 // =======================
 // 🚀 Inicialización
 // =======================
-connectDB()
+connectDB();
 const app = express();
 
 // =======================
@@ -33,9 +35,11 @@ const app = express();
 // =======================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "src", "public")));
 app.use("/posters", express.static(path.join(__dirname, "public", "posters")));
+app.use(sessionMiddleware);
+app.use(userState);
 
 // =======================
 // 🎨 Configuración de vistas
@@ -48,20 +52,25 @@ app.set("layout", "./layout");
 // =======================
 // 🧭 Rutas API
 // =======================
-app.use("/api/movies",auth, moviesRoutes);
-app.use("/api/genres",auth, genresRoutes);
-app.use("/api/categories",auth, categoriesRoutes);
-app.use("/api/actors",auth, actorsRoutes);
+app.use("/api/movies", auth, moviesRoutes);
+app.use("/api/genres", auth, genresRoutes);
+app.use("/api/categories", auth, categoriesRoutes);
+app.use("/api/actors", auth, actorsRoutes);
 app.use("/api/auth", authRoutes);
 
 // =======================
 // 🧾 Rutas del Monolito (Views)
 // =======================
-app.use("/movies", monolithMoviesRoutes);
+app.use("/auth", monolithAuthRoutes);
+app.use("/movies", auth, monolithMoviesRoutes);
 
 // Redirección base
 app.use("/", (req, res) => {
-  res.redirect("/movies");
+  if (req.session.user) {
+    res.redirect("/movies");
+  } else {
+    res.redirect("/auth/login");
+  }
 });
 
 // =======================

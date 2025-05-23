@@ -1,0 +1,73 @@
+<div class="container d-flex align-items-center justify-content-center">
+  <div
+    class="login-container bg-dark text-white p-4 rounded shadow"
+    style="max-width: 50%; width: 100%"
+  >
+    <h3 class="text-center mb-4">Iniciar Sesión</h3>
+    <form action="/auth/login" method="POST">
+      <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-control bg-light text-dark border-0"
+          id="email"
+          name="email"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          type="password"
+          class="form-control bg-light text-dark border-0"
+          id="password"
+          name="password"
+          required
+        />
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-outline-light">Entrar</button>
+      </div>
+    </form>
+    <div class="text-center mt-3">
+      <small>
+        <a href="/auth/register" class="text-light text-decoration-none">
+          ¿No tenés cuenta? Registrate
+        </a>
+      </small>
+    </div>
+  </div>
+</div>
+
+<% if (typeof successMessage !== "undefined") { %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    Swal.fire({
+      icon: "success",
+      title: "¡Éxito!",
+      text: "<%= successMessage %>",
+      confirmButtonText: "Aceptar",
+    }).then((result) => {
+      window.location.href = "/auth/login";
+    });
+  });
+</script>
+<% } %>
+
+<% if (typeof errorMessage !== "undefined" && typeof errorCode !== "undefined") { %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    Swal.fire({
+      icon: "error",
+      title: "Error: <%= errorCode %>",
+      html: "<%= errorMessage %>",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      window.location.href = "/auth/login";
+    });
+  });
+</script>
+<% } %>

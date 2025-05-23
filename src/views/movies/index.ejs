@@ -1,7 +1,8 @@
 <!-- Contenedor de los botones -->
-<div
+<div class="flex-column bg-white card p-2">
+  <div
   class="mb-4 d-flex justify-content-between position-sticky p-2"
-  style="top: 0; z-index: 1000; background: white"
+  style="top: 0; z-index: 1000; background: white;"
 >
   <h1>Películas</h1>
   <div class="d-flex">
@@ -26,6 +27,7 @@
       <span class="material-icons">delete</span> Eliminar
     </button>
   </div>
+  
 </div>
 
 <div
@@ -52,7 +54,7 @@
           class="card-title text-center d-flex justify-content-center align-items-center gap-2"
         >
           <span class="text-dark"><%= movie.titulo %></span>
-          <% if (movie.blocked) { %>
+          <% if (user && user.role !== 'admin') { %>
           <span class="material-icons text-danger" title="Película bloqueada"
             >lock</span
           >
@@ -74,7 +76,7 @@
       text: "<%= successMessage %>",
       confirmButtonText: "Aceptar",
     }).then((result) => {
-      window.location.href = "/";
+      window.location.href = "/movies";
     });
   });
 </script>
@@ -93,7 +95,7 @@
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#d33",
     }).then((result) => {
-      window.location.href = "/";
+      window.location.href = "/movies";
     });
   });
 </script>
@@ -177,3 +179,5 @@
     word-wrap: break-word;
   }
 </style>
+
+</div>
