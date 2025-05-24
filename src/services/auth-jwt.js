@@ -1,6 +1,6 @@
 const HttpError = require("../utils/http-error");
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const User = require("../models/user");
 const { isValidEmail, isValidPassword } = require("../utils/validators");
 
 const register = async (req) => {
