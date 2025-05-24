@@ -10,6 +10,7 @@ const auth = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
     const payload = await verifyToken(token);
+    req.payload = payload
     if (!payload) return res.status(401).json({ error: "Token inválido" });
 
     req.user = payload;

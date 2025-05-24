@@ -5,6 +5,7 @@ const actorsModel = require("../models/actors");
 const fs = require("fs");
 const path = require("path");
 const HttpError = require("../utils/http-error");
+const User = require("../models/User");
 
 const validarDatosPelicula = async (data) => {
   const { title, category_id, summary, poster, genres, actors } = data;
@@ -105,6 +106,12 @@ const createMovie = async (req) => {
 const updateMovie = async (req) => {
   const { id } = req.params;
   const { title, category_id, summary, genres, actors } = req.body;
+  const userId = req.session.user?._id || req.payload.id;
+  const user = await User.findById(userId);
+
+  if (!user || user.role !== "admin") {
+    throw new HttpError(403, "No tenés permisos para modificar esta película");
+  }
 
   if (!title || !category_id || !summary || !genres || !actors) {
     if (req.file && req.file.path) {
@@ -120,13 +127,6 @@ const updateMovie = async (req) => {
       fs.unlink(req.file.path, () => {});
     }
     throw new HttpError(400, "El ID no corresponde a una película registrada");
-  }
-
-  if (pelicula.blocked) {
-    throw new HttpError(
-      409,
-      "Esta pelicula no se puede modificar porque está bloqueada"
-    );
   }
 
   if (!pelicula.poster && !req.file) {
@@ -161,13 +161,13 @@ const updateMovie = async (req) => {
 
 const deleteMovie = async (req) => {
   const pelicula = await getMovieById(req);
-
-  if (pelicula.blocked) {
-    throw new HttpError(
-      409,
-      "Esta pelicula no se puede eliminar porque está bloqueada"
-    );
+  const userId = req.session.user?._id || req.payload.id;
+  const user = await User.findById(userId);
+  
+  if (!user || user.role !== "admin") {
+    throw new HttpError(403, "No tenés permisos para modificar esta película");
   }
+
   const oldPosterPath = path.join(
     "public",
     "posters",

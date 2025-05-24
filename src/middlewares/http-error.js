@@ -18,7 +18,7 @@ const errorHandler = async (err, req, res, next) => {
   if (req.file && req.file.path) {
     fs.unlink(req.file.path, () => {});
   }
-
+  
   res.status(statusCode).render(urlNavigation, {
     movies: await getMovies(req),
     title: title,

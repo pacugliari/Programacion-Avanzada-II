@@ -21,10 +21,9 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  req.session.user = await login(req);
-  res.redirect("/movies");
+  await login(req,res);
 };
 
 exports.logout = async (req, res) => {
-  logout(req,res);
+  await logout(req,res);
 };

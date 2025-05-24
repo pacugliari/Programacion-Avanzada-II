@@ -6,7 +6,10 @@ const path = require("path");
 const methodOverride = require("method-override");
 const expressLayouts = require("express-ejs-layouts");
 const connectDB = require("./src/config/mongo");
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
 
 // Rutas API
 const moviesRoutes = require("./src/routes/api/movies");
