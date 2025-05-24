@@ -1,0 +1,183 @@
+<!-- Contenedor de los botones -->
+<div class="flex-column bg-white card p-2">
+  <div
+  class="mb-4 d-flex justify-content-between position-sticky p-2"
+  style="top: 0; z-index: 1000; background: white;"
+>
+  <h1>Películas</h1>
+  <div class="d-flex">
+    <button
+      id="btnCreate"
+      class="btn btn-success me-2 d-flex justify-content-center align-items-center"
+    >
+      <span class="material-icons">add</span> Crear
+    </button>
+    <button
+      id="btnModify"
+      class="btn btn-warning me-2 d-flex justify-content-center align-items-center"
+      disabled
+    >
+      <span class="material-icons">edit</span> Modificar
+    </button>
+    <button
+      id="btnDelete"
+      class="btn btn-danger d-flex justify-content-center align-items-center"
+      disabled
+    >
+      <span class="material-icons">delete</span> Eliminar
+    </button>
+  </div>
+  
+</div>
+
+<div
+  class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 me-2 ms-2"
+>
+  <% movies.forEach(movie => { %>
+  <div class="col">
+    <div
+      class="card h-100 shadow-sm movie-card"
+      data-movie-id="<%= movie.id %>"
+    >
+      <span href="/movies/<%= movie.id %>">
+        <div class="card-img-container" style="height: 300px; overflow: hidden">
+          <img
+            src="<%= movie.poster %>"
+            class="card-img-top"
+            alt="<%= movie.titulo %>"
+            style="width: 100%; height: 100%; object-fit: contain"
+          />
+        </div>
+      </span>
+      <div class="card-body">
+        <h5
+          class="card-title text-center d-flex justify-content-center align-items-center gap-2"
+        >
+          <span class="text-dark"><%= movie.titulo %></span>
+          <% if (user && user.role !== 'admin') { %>
+          <span class="material-icons text-danger" title="Película bloqueada"
+            >lock</span
+          >
+          <% } %>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+</div>
+
+<% if (typeof successMessage !== "undefined") { %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    Swal.fire({
+      icon: "success",
+      title: "¡Éxito!",
+      text: "<%= successMessage %>",
+      confirmButtonText: "Aceptar",
+    }).then((result) => {
+      window.location.href = "/movies";
+    });
+  });
+</script>
+<% } %> <% if (typeof errorMessage !== "undefined" && errorCode !== "undefined")
+{ %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let titleText = "¡Error!";
+    let fullMessage = "<%= errorMessage %>";
+
+    Swal.fire({
+      icon: "error",
+      title: "Error: <%= errorCode %>",
+      html: fullMessage,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      window.location.href = "/movies";
+    });
+  });
+</script>
+<% } %>
+
+<!-- Material Icons -->
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+
+<script>
+  let selectedMovieId = null;
+  document.querySelectorAll(".movie-card").forEach((card) => {
+    card.addEventListener("click", function () {
+      event.stopPropagation();
+      document
+        .querySelectorAll(".movie-card")
+        .forEach((c) => c.classList.remove("selected-card"));
+
+      this.classList.add("selected-card");
+      selectedMovieId = this.getAttribute("data-movie-id");
+      document.getElementById("btnModify").disabled = false;
+      document.getElementById("btnDelete").disabled = false;
+
+      // Update
+      document.getElementById("btnModify").onclick = function () {
+        window.location.href = `/movies/edit/${selectedMovieId}`;
+      };
+
+      // Delete
+      document.getElementById("btnDelete").onclick = function () {
+        Swal.fire({
+          title: "¿Estás seguro de que quieres eliminar esta película?",
+          text: "¡Esta acción no se puede deshacer!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/movies/delete/${selectedMovieId}`;
+          }
+        });
+      };
+    });
+
+    // Create
+    document.getElementById("btnCreate").onclick = function () {
+      window.location.href = `/movies/create`;
+    };
+
+    //  Detail
+    card.addEventListener("dblclick", function () {
+      selectedMovieId = this.getAttribute("data-movie-id");
+      window.location.href = `/movies/${selectedMovieId}`;
+    });
+  });
+</script>
+
+<style>
+  .selected-card {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  }
+
+  .movie-poster {
+    max-width: 100%;
+    height: auto;
+    max-height: 350px;
+  }
+
+  .content-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .content-wrapper p {
+    word-wrap: break-word;
+  }
+</style>
+
+</div>

@@ -1,0 +1,243 @@
+<div class="flex-column bg-white card p-2 top-0">
+  <div
+  class="mb-4 d-flex align-items-center position-sticky p-2"
+  style="top: 0; z-index: 1000; background: white"
+>
+  <div class="d-flex">
+    <button
+      onclick="window.location.href='/movies'"
+      class="btn btn-secondary d-flex justify-content-center align-items-center"
+    >
+      <span class="material-icons me-2">arrow_back</span>
+    </button>
+  </div>
+  <h1 class="ms-3">Editar Película</h1>
+</div>
+
+<form
+  action="/movies/<%= movie.id %>?_method=PUT"
+  method="POST"
+  enctype="multipart/form-data"
+  class="row g-3 needs-validation"
+  novalidate
+>
+  <input type="hidden" name="idPelicula" value="<%= movie.idPelicula %>" />
+
+  <div class="col-12 d-flex justify-content-center mb-3">
+    <div id="posterPreviewContainer">
+      <img
+        id="posterPreview"
+        src="<%= movie.poster || 'http://localhost:3001/posters/image-default.png' %>"
+        alt="Vista previa del Poster"
+        style="
+          max-width: 150px;
+          max-height: 200px;
+          border: 1px solid #ddd;
+          padding: 5px;
+          object-fit: cover;
+        "
+      />
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="poster" class="form-label">Poster</label>
+    <input
+      type="file"
+      class="form-control"
+      id="poster"
+      name="poster"
+      accept=".jpg, .jpeg, .png, .gif"
+    />
+  </div>
+
+  <div class="col-md-6">
+    <label for="title" class="form-label">Título (*)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="title"
+      name="title"
+      required
+      value="<%= movie.titulo %>"
+    />
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-12">
+    <label for="summary" class="form-label">Resumen (*)</label>
+    <textarea
+      class="form-control"
+      id="summary"
+      name="summary"
+      rows="3"
+      required
+    ><%= movie.resumen %></textarea>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-md-4">
+    <label for="category_id" class="form-label">Categoría (*)</label>
+    <select id="category_id" name="category_id" class="form-select" required>
+      <option disabled value="">Seleccione una categoría</option>
+      <% categories.forEach(function(category) { %>
+    <option
+      value="<%= category.idCategoria %>"
+      <%= movie.categoria.some(c => c.id === category.idCategoria) ? 'selected' : '' %>
+    >
+      <%= category.descripcion %>
+    </option>
+      <% }); %>
+    </select>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-md-4">
+    <label for="cantidadTemporadas" class="form-label">Temporadas (*)</label>
+    <input
+      type="number"
+      class="form-control"
+      id="cantidadTemporadas"
+      name="cantidadTemporadas"
+      min="1"
+      required
+      value="<%= movie.temporadas %>"
+    />
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-md-4">
+    <label for="trailer" class="form-label">Link de Trailer</label>
+    <input
+      type="text"
+      class="form-control"
+      id="trailer"
+      name="trailer"
+      value="<%= movie.trailer || 'N/A' %>"
+    />
+  </div>
+
+  <div class="col-md-6">
+    <label for="genres" class="form-label">Géneros (*)</label>
+    <select multiple class="form-select" id="genres" name="genres[]" required>
+      <% genres.forEach(function(genre) { %>
+      <option
+        value="<%= genre.idGenero %>"
+        <%= movie.generos.some(g => g.id === genre.idGenero) ? 'selected' : '' %>
+      >
+        <%= genre.descripcion %>
+      </option>
+      <% }); %>
+    </select>
+    <small class="text-muted">Ctrl (Windows) o Cmd (Mac) para selección múltiple</small>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="actors" class="form-label">Actores (*)</label>
+    <select multiple class="form-select" id="actors" name="actors[]" required>
+      <% actors.forEach(function(actor) { %>
+      <option
+        value="<%= actor.idActor %>"
+        <%= movie.reparto.some(a => a.id === actor.idActor) ? 'selected' : '' %>
+      >
+        <%= actor.nombre %>
+      </option>
+      <% }); %>
+    </select>
+    <small class="text-muted">Ctrl (Windows) o Cmd (Mac) para selección múltiple</small>
+    <div class="invalid-feedback">Este campo es requerido</div>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+  </div>
+</form>
+
+<script>
+  // JavaScript para habilitar la validación de Bootstrap
+  (function () {
+    "use strict";
+    var forms = document.querySelectorAll(".needs-validation");
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const categorySelect = document.getElementById("category_id");
+    const temporadasInput = document.getElementById("cantidadTemporadas");
+
+    // Función para actualizar el estado del campo de temporadas
+    function updateTemporadasInput() {
+      const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+      const categoria = selectedOption.textContent.trim().toLowerCase();
+
+      if (categoria === "serie") {
+        temporadasInput.disabled = false;
+        temporadasInput.required = true;
+      } else {
+        temporadasInput.disabled = true;
+        temporadasInput.required = false;
+        temporadasInput.value = ""; // Limpiar valor si no aplica
+      }
+    }
+
+    // Evento al cargar por si hay una categoría ya seleccionada (ej. en modo edición)
+    updateTemporadasInput();
+
+    // Evento cuando el usuario cambia la categoría
+    categorySelect.addEventListener("change", updateTemporadasInput);
+  });
+
+  // JavaScript para la previsualización de la imagen del poster
+  document.addEventListener("DOMContentLoaded", function () {
+    const posterInput = document.getElementById("poster");
+    const posterPreview = document.getElementById("posterPreview");
+    const defaultPosterSrc = "http://localhost:3001/posters/image-default.png";
+
+    posterInput.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const fileType = file["type"];
+        const validImageTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/gif",
+          "image/jpg",
+        ];
+        if (!validImageTypes.includes(fileType)) {
+          posterPreview.src = defaultPosterSrc;
+          posterInput.value = "";
+          Swal.fire({
+            icon: "error",
+            title: "Archivo no válido",
+            text: "Por favor, selecciona un archivo de imagen (JPG, PNG, GIF).",
+          });
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          posterPreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        posterPreview.src = defaultPosterSrc;
+      }
+    });
+  });
+</script>
+</div>
+
