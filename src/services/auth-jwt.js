@@ -1,19 +1,10 @@
 const HttpError = require("../utils/http-error");
 const bcrypt = require("bcryptjs");
-const User = require("../models/user");
-
-const isValidEmail = (email) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-};
-
-const isValidPassword = (password) => {
-  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-  return regex.test(password);
-};
+const User = require("../models/User");
+const { isValidEmail, isValidPassword } = require("../utils/validators");
 
 const register = async (req) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   // Validaciones
   if (!isValidEmail(email)) {
@@ -27,12 +18,16 @@ const register = async (req) => {
     );
   }
 
+  if (!name) {
+    throw new HttpError(400, "El campo nombre es requerido");
+  }
+
   const { signToken } = await import("../utils/jwt.mjs");
   const exist = await User.findOne({ email });
   if (exist) throw new HttpError(400, "Ya existe el usuario");
 
   const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ email, password: hashed });
+  const user = await User.create({ email, password: hashed, name });
 
   return await signToken({
     id: user._id.toString(),
@@ -43,7 +38,8 @@ const register = async (req) => {
 
 const login = async (req) => {
   const { email, password } = req.body;
-  if (!email || !password) throw new HttpError(400, "Email y contraseña son obligatorios");
+  if (!email || !password)
+    throw new HttpError(400, "Email y contraseña son obligatorios");
 
   const { signToken } = await import("../utils/jwt.mjs");
   const user = await User.findOne({ email });

@@ -3,7 +3,8 @@ const { getMovies } = require("../services/movies");
 
 const errorHandler = async (err, req, res, next) => {
   const statusCode = err.statusCode ?? 500;
-  const title = err.title ?? "Error";
+  const urlNavigation = err.urlNavigation;
+  const title = err.title ?? "Lista de películas";
   const message =
     err.message ?? "Se ha generado un error inesperado en el servidor.";
 
@@ -17,10 +18,10 @@ const errorHandler = async (err, req, res, next) => {
   if (req.file && req.file.path) {
     fs.unlink(req.file.path, () => {});
   }
-
-  res.status(statusCode).render("movies/index", {
+  
+  res.status(statusCode).render(urlNavigation, {
     movies: await getMovies(req),
-    title: "Lista de películas",
+    title: title,
     errorMessage: message,
     errorCode: statusCode,
   });

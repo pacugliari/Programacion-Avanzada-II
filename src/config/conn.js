@@ -1,5 +1,8 @@
 const mysql = require("mysql2");
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -16,7 +19,7 @@ pool.getConnection((error, connection) => {
   if (error) {
     console.log("Hubo un error de conexión", error);
   } else {
-    console.log("✅ Conexión a la base de datos fue exitosa.");
+    console.log("✅ Conexión a la base de datos fue exitosa: "+process.env.DB_HOST);
     connection.release();
   }
 });

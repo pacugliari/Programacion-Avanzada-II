@@ -1,4 +1,4 @@
-const { register, login } = require("../../services/auth");
+const { register, login } = require("../../services/auth-jwt");
 
 const registerController = async (req, res) => {
   res.status(200).json({ payload: { token: await register(req) } });

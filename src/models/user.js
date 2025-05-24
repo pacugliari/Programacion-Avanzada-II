@@ -8,9 +8,10 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  name: { type: String, required: true }
 }, {
   timestamps: true,
   collection: "usuarios",
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports =  mongoose.model("User", userSchema);
