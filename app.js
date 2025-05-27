@@ -39,8 +39,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, "src", "public")));
-app.use("/posters", express.static(path.join(__dirname, "public", "posters")));
+app.use(express.static('public'))
 app.use(sessionMiddleware);
 app.use(userState);
 

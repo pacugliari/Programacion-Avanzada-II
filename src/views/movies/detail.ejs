@@ -1,4 +1,4 @@
-<div class="flex-column bg-white card p-2 top-0">
+<div class="flex-column bg-white card p-2 top-0 w-50">
   <div
     class="mb-4 d-flex align-items-center position-sticky p-2"
     style="top: 0; z-index: 1000; background: white"
@@ -14,7 +14,8 @@
     <h1 class="ms-3">Detalle Pelicula</h1>
   </div>
 
-  <h1 class="mb-4 text-center"><%= movie.titulo %></h1>
+  <div class="border rounded shadow">
+    <h2 class="mb-4 text-center"><%= movie.titulo %></h2>
 
   <div class="text-center mb-4">
     <img
@@ -25,29 +26,35 @@
     />
   </div>
 
-  <p><strong>Categoría:</strong> <%= movie.categoria[0].descripcion %></p>
-  <p>
-    <strong>Géneros:</strong>
-    <% movie.generos.forEach(function(genero, index) { %> <%= genero.descripcion
-    %><%= index < movie.generos.length - 1 ? ', ' : '' %> <% }); %>
-  </p>
-  <p><strong>Resumen:</strong> <span><%= movie.resumen %></span></p>
-  <p><strong>Temporadas:</strong> <span><%= movie.temporadas %></span></p>
-  <p>
-    <strong>Reparto:</strong>
-    <% movie.reparto.forEach(function(actor, index) { %> <%= actor.nombre %><%=
-    index < movie.reparto.length - 1 ? ', ' : '' %> <% }); %>
-  </p>
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <p><strong>Categoría:</strong> <%= movie.categoria[0].descripcion %></p>
+      <p>
+        <strong>Géneros:</strong>
+        <% movie.generos.forEach(function(genero, index) { %> <%=
+        genero.descripcion %><%= index < movie.generos.length - 1 ? ', ' : '' %>
+        <% }); %>
+      </p>
+      <p><strong>Resumen:</strong> <span><%= movie.resumen %></span></p>
+      <p><strong>Temporadas:</strong> <span><%= movie.temporadas %></span></p>
+      <p>
+        <strong>Reparto:</strong>
+        <% movie.reparto.forEach(function(actor, index) { %> <%= actor.nombre
+        %><%= index < movie.reparto.length - 1 ? ', ' : '' %> <% }); %>
+      </p>
 
-  <% if (movie.trailer && movie.trailer !== 'N/A') { %>
-  <p>
-    <strong>Trailer:</strong>
-    <a
-      href="<%= movie.trailer %>"
-      target="_blank"
-      class="btn btn-primary btn-sm"
-      >Ver trailer</a
-    >
-  </p>
-  <% } %>
+      <% if (movie.trailer && movie.trailer !== 'N/A') { %>
+      <p>
+        <strong>Trailer:</strong>
+        <a
+          href="<%= movie.trailer %>"
+          target="_blank"
+          class="btn btn-primary btn-sm"
+          >Ver trailer</a
+        >
+      </p>
+      <% } %>
+    </div>
+  </div>
+  </div>
 </div>

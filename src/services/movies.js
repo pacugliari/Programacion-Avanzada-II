@@ -2,10 +2,9 @@ const moviesModel = require("../models/movies");
 const categoriesModel = require("../models/categories");
 const genresModel = require("../models/genres");
 const actorsModel = require("../models/actors");
-const fs = require("fs");
-const path = require("path");
 const HttpError = require("../utils/http-error");
 const User = require("../models/user");
+const cloudinary = require("../config/cloudinary");
 
 const validarDatosPelicula = async (data) => {
   const { title, category_id, summary, poster, genres, actors } = data;
@@ -49,12 +48,10 @@ const validarDatosPelicula = async (data) => {
 };
 
 const getMovies = async (req) => {
-  const host = req.headers.host;
   const movies = await moviesModel.getAll();
   return movies
     ? movies.map((p) => ({
         ...p,
-        poster: `http://${host}${p.poster}`,
         reparto: JSON.parse(p.reparto),
         generos: JSON.parse(p.generos),
         categoria: JSON.parse(p.categoria),
@@ -65,14 +62,12 @@ const getMovies = async (req) => {
 const getMovieById = async (req) => {
   const { id } = req.params;
   const pelicula = await moviesModel.getOne({ id });
-  const host = req.headers.host;
 
   if (!pelicula)
     throw new HttpError(400, "El ID no corresponde a una pelicula registrada");
 
   return {
     ...pelicula,
-    poster: `http://${host}${pelicula.poster}`,
     reparto: JSON.parse(pelicula.reparto),
     generos: JSON.parse(pelicula.generos),
     categoria: JSON.parse(pelicula.categoria),
@@ -81,24 +76,25 @@ const getMovieById = async (req) => {
 
 const createMovie = async (req) => {
   const { title, category_id, summary, genres, actors } = req.body;
+
   if (!req.file) {
     throw new HttpError(400, "Falta la imagen del poster");
   }
 
   if (!title || !category_id || !summary || !genres || !actors) {
-    fs.unlink(req.file.path, () => {});
+    await cloudinary.uploader.destroy(req.file.filename);
     throw new HttpError(400, "Faltan datos relevantes");
   }
-
-  const posterPath = `/posters/${req.file.filename}`;
 
   const data = {
     ...req.body,
     category_id: Number(category_id),
-    poster: `${posterPath}`,
+    poster: req.file.path,
+    poster_id: req.file.filename,
     genres: Array.isArray(genres) ? genres.map(Number) : [Number(genres)],
     actors: Array.isArray(actors) ? actors.map(Number) : [Number(actors)],
   };
+
   await validarDatosPelicula(data);
   return await moviesModel.create(data);
 };
@@ -114,47 +110,36 @@ const updateMovie = async (req) => {
   }
 
   if (!title || !category_id || !summary || !genres || !actors) {
-    if (req.file && req.file.path) {
-      fs.unlink(req.file.path, () => {});
-    }
+    if (req.file) await cloudinary.uploader.destroy(req.file.filename);
     throw new HttpError(400, "Faltan datos relevantes");
   }
 
   const pelicula = await getMovieById(req);
-
   if (!pelicula) {
-    if (req.file && req.file.path) {
-      fs.unlink(req.file.path, () => {});
-    }
-    throw new HttpError(400, "El ID no corresponde a una película registrada");
+    if (req.file) await cloudinary.uploader.destroy(req.file.filename);
+    throw new HttpError(404, "Película no encontrada");
   }
 
-  if (!pelicula.poster && !req.file) {
-    throw new HttpError(400, "Falta la imagen del poster");
-  }
+  let newPoster = pelicula.poster;
+  let newPosterId = pelicula.poster_id;
 
-  let posterPath = `/posters/${pelicula.poster.split("/").pop()}`;
   if (req.file) {
-    const oldPosterPath = path.join(
-      "public",
-      "posters",
-      pelicula.poster.split("/").pop()
-    );
-
-    if (fs.existsSync(oldPosterPath)) {
-      fs.unlinkSync(oldPosterPath);
+    if (pelicula.poster_id) {
+      await cloudinary.uploader.destroy(pelicula.poster_id);
     }
-
-    posterPath += `/posters/${req.file.filename}`;
+    newPoster = req.file.path;
+    newPosterId = req.file.filename;
   }
 
   const data = {
     ...req.body,
     category_id: Number(category_id),
-    poster: `${posterPath}`,
+    poster: newPoster,
+    poster_id: newPosterId,
     genres: Array.isArray(genres) ? genres.map(Number) : [Number(genres)],
     actors: Array.isArray(actors) ? actors.map(Number) : [Number(actors)],
   };
+
   await validarDatosPelicula(data);
   return await moviesModel.update(id, data);
 };
@@ -163,19 +148,13 @@ const deleteMovie = async (req) => {
   const pelicula = await getMovieById(req);
   const userId = req.session.user?._id || req.payload.id;
   const user = await User.findById(userId);
-  
+
   if (!user || user.role !== "admin") {
     throw new HttpError(403, "No tenés permisos para modificar esta película");
   }
 
-  const oldPosterPath = path.join(
-    "public",
-    "posters",
-    pelicula.poster.split("/").pop()
-  );
-
-  if (fs.existsSync(oldPosterPath)) {
-    fs.unlinkSync(oldPosterPath);
+  if (pelicula.poster_id) {
+    await cloudinary.uploader.destroy(pelicula.poster_id);
   }
 
   return await moviesModel.deleteOne(pelicula.id);

@@ -1,24 +1,20 @@
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/posters");
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const ext = path.extname(file.originalname);
-    cb(null, `${timestamp}${ext}`);
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "posters",
+    allowed_formats: ["jpg"],
+    format: async (req, file) => "jpg",
+    public_id: (req, file) => {
+      const timestamp = Date.now();
+      return `${timestamp}`;
+    },
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (ext === ".jpg") {
-    cb(null, true);
-  } else {
-    cb(new Error("Solo se permiten imágenes .jpg"));
-  }
-};
+const upload = multer({ storage });
 
-module.exports = multer({ storage, fileFilter });
+module.exports = upload;
