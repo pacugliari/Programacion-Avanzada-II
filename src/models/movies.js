@@ -36,6 +36,7 @@ const create = async (data) => {
     genres,
     cantidadTemporadas,
     trailer,
+    poster_id,
   } = data;
 
   const connection = await conn.getConnection();
@@ -44,8 +45,15 @@ const create = async (data) => {
     await connection.beginTransaction();
 
     const [result] = await connection.query(
-      `INSERT INTO peliculas (titulo, resumen, poster, idCategoria, cantidadTemporadas) VALUES (?, ?, ?, ?, ?)`,
-      [title, summary, poster, category_id, cantidadTemporadas ?? "N/A"]
+      `INSERT INTO peliculas (titulo, resumen, poster,poster_id, idCategoria, cantidadTemporadas) VALUES (?, ?,?, ?, ?, ?)`,
+      [
+        title,
+        summary,
+        poster,
+        poster_id,
+        category_id,
+        cantidadTemporadas ?? "N/A",
+      ]
     );
 
     const idPelicula = result.insertId;
@@ -124,6 +132,7 @@ const update = async (id, data) => {
     genres,
     cantidadTemporadas,
     trailer,
+    poster_id,
   } = data;
 
   const connection = await conn.getConnection();
@@ -132,8 +141,16 @@ const update = async (id, data) => {
     await connection.beginTransaction();
 
     await connection.query(
-      `UPDATE peliculas SET titulo = ?, resumen = ?, poster = ?, idCategoria = ?, cantidadTemporadas = ? WHERE idPelicula = ?`,
-      [title, summary, poster, category_id, cantidadTemporadas ?? "N/A", id]
+      `UPDATE peliculas SET titulo = ?, resumen = ?, poster = ?,poster_id = ?, idCategoria = ?, cantidadTemporadas = ? WHERE idPelicula = ?`,
+      [
+        title,
+        summary,
+        poster,
+        poster_id,
+        category_id,
+        cantidadTemporadas ?? "N/A",
+        id,
+      ]
     );
 
     // Limpiar relaciones previas

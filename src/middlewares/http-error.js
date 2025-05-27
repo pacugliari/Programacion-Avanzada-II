@@ -1,9 +1,10 @@
-const fs = require("fs");
+
 const { getMovies } = require("../services/movies");
+const cloudinary = require("../config/cloudinary");
 
 const errorHandler = async (err, req, res, next) => {
   const statusCode = err.statusCode ?? 500;
-  const urlNavigation = err.urlNavigation;
+  const urlNavigation = err.urlNavigation ?? "movies/index";
   const title = err.title ?? "Lista de películas";
   const message =
     err.message ?? "Se ha generado un error inesperado en el servidor.";
@@ -15,8 +16,12 @@ const errorHandler = async (err, req, res, next) => {
     });
   }
 
-  if (req.file && req.file.path) {
-    fs.unlink(req.file.path, () => {});
+  if (req.file && req.file.filename) {
+    try {
+      await cloudinary.uploader.destroy(req.file.filename);
+    } catch (error) {
+      console.error("Error borrando imagen en Cloudinary:", error);
+    }
   }
   
   res.status(statusCode).render(urlNavigation, {

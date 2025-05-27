@@ -39,35 +39,11 @@
   </div>
 </div>
 
-<% if (typeof successMessage !== "undefined") { %>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    Swal.fire({
-      icon: "success",
-      title: "¡Éxito!",
-      text: "<%= successMessage %>",
-      confirmButtonText: "Aceptar",
-    }).then((result) => {
-      window.location.href = "/auth/login";
-    });
-  });
+  const flashMessages = {
+    successMessage: <%- JSON.stringify(typeof successMessage !== 'undefined' ? successMessage : null) %>,
+    errorMessage: <%- JSON.stringify(typeof errorMessage !== 'undefined' ? errorMessage : null) %>,
+    errorCode: <%- JSON.stringify(typeof errorCode !== 'undefined' ? errorCode : null) %>
+  };
 </script>
-<% } %>
-
-<% if (typeof errorMessage !== "undefined" && typeof errorCode !== "undefined") { %>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    Swal.fire({
-      icon: "error",
-      title: "Error: <%= errorCode %>",
-      html: "<%= errorMessage %>",
-      confirmButtonText: "Aceptar",
-      confirmButtonColor: "#d33",
-    }).then((result) => {
-      window.location.href = "/auth/login";
-    });
-  });
-</script>
-<% } %>
+<script type="module" src="/js/auth.js"></script>
