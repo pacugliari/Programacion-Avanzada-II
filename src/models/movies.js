@@ -122,6 +122,35 @@ const deleteOne = async (id) => {
   }
 };
 
+const toggleBlockStatus = async (id) => {
+  const connection = await conn.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [rows] = await connection.query(
+      `SELECT blocked FROM peliculas WHERE idPelicula = ?`,
+      [id]
+    );
+
+    const currentStatus = rows[0].blocked;
+    const newStatus = !currentStatus;
+
+    await connection.query(
+      `UPDATE peliculas SET blocked = ? WHERE idPelicula = ?`,
+      [newStatus, id]
+    );
+
+    await connection.commit();
+    return newStatus;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 const update = async (id, data) => {
   const {
     title,
@@ -204,4 +233,5 @@ module.exports = {
   create,
   deleteOne,
   update,
+  toggleBlockStatus
 };

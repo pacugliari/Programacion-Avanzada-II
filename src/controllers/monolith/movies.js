@@ -7,24 +7,25 @@ const {
   createMovie,
   updateMovie,
   deleteMovie,
+  toggleBlockStatusMovie,
 } = require("../../services/movies");
 
 exports.index = async (req, res) => {
-  res.render("movies/index", {
+  return res.render("movies/index", {
     movies: await getMovies(req),
     title: "Lista de peliculas",
   });
 };
 
 exports.detail = async (req, res) => {
-  res.render("movies/detail", {
+  return res.render("movies/detail", {
     movie: await getMovieById(req),
     title: "Detalle de pelicula",
   });
 };
 
 exports.createForm = async (req, res) => {
-  res.render("movies/create", {
+  return res.render("movies/create", {
     title: "Crear pelicula",
     actors: await getActors(),
     genres: await getGenres(),
@@ -33,7 +34,7 @@ exports.createForm = async (req, res) => {
 };
 
 exports.editForm = async (req, res) => {
-  res.render("movies/edit", {
+  return res.render("movies/edit", {
     title: "Editar pelicula",
     actors: await getActors(),
     genres: await getGenres(),
@@ -45,7 +46,7 @@ exports.editForm = async (req, res) => {
 exports.create = async (req, res) => {
   await createMovie(req);
 
-  res.status(201).render("movies/index", {
+  return res.status(201).render("movies/index", {
     movies: await getMovies(req),
     title: "Lista de películas",
     successMessage: "Película creada exitosamente",
@@ -55,7 +56,7 @@ exports.create = async (req, res) => {
 exports.edit = async (req, res) => {
   await updateMovie(req);
 
-  res.status(201).render("movies/index", {
+  return res.status(201).render("movies/index", {
     movies: await getMovies(req),
     title: "Lista de películas",
     successMessage: "Película modificada exitosamente",
@@ -65,9 +66,19 @@ exports.edit = async (req, res) => {
 exports.delete = async (req, res) => {
   await deleteMovie(req);
 
-  res.status(200).render("movies/index", {
+  return res.status(200).render("movies/index", {
     movies: await getMovies(req),
     title: "Lista de películas",
     successMessage: "Película borrada exitosamente",
+  });
+};
+
+exports.block = async (req, res) => {
+  const status = await toggleBlockStatusMovie(req);
+
+  return res.status(200).render("movies/index", {
+    movies: await getMovies(req),
+    title: "Lista de películas",
+    successMessage: `Película ${status} exitosamente`,
   });
 };

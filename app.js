@@ -39,7 +39,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static('public'))
+app.use(express.static("public"));
 app.use(sessionMiddleware);
 app.use(userState);
 
@@ -68,11 +68,7 @@ app.use("/movies", auth, monolithMoviesRoutes);
 
 // Redirección base
 app.use("/", (req, res) => {
-  if (req.session.user) {
-    res.redirect("/movies");
-  } else {
-    res.redirect("/auth/login");
-  }
+  return res.redirect("/auth/login");
 });
 
 // =======================
