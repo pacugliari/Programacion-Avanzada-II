@@ -105,7 +105,8 @@ const updateMovie = async (req) => {
   const userId = req.session.user?._id || req.payload.id;
   const user = await User.findById(userId);
 
-  if (!user || user.role !== "admin") {
+  if (!user) {
+    if (req.file) await cloudinary.uploader.destroy(req.file.filename);
     throw new HttpError(403, "No tenés permisos para modificar esta película");
   }
 
@@ -118,6 +119,14 @@ const updateMovie = async (req) => {
   if (!pelicula) {
     if (req.file) await cloudinary.uploader.destroy(req.file.filename);
     throw new HttpError(404, "Película no encontrada");
+  }
+
+  if (user.role !== "admin" && pelicula.blocked) {
+    if (req.file) await cloudinary.uploader.destroy(req.file.filename);
+    throw new HttpError(
+      403,
+      "La película está bloqueada y no puede modificarse"
+    );
   }
 
   let newPoster = pelicula.poster;
@@ -149,8 +158,12 @@ const deleteMovie = async (req) => {
   const userId = req.session.user?._id || req.payload.id;
   const user = await User.findById(userId);
 
-  if (!user || user.role !== "admin") {
-    throw new HttpError(403, "No tenés permisos para modificar esta película");
+  if (!user) {
+    throw new HttpError(403, "No tenés permisos para eliminar esta película");
+  }
+
+  if (user.role !== "admin" && pelicula.blocked) {
+    throw new HttpError(403, "La película está bloqueada y no puede eliminarse");
   }
 
   if (pelicula.poster_id) {
@@ -160,10 +173,29 @@ const deleteMovie = async (req) => {
   return await moviesModel.deleteOne(pelicula.id);
 };
 
+const toggleBlockStatusMovie = async (req) => {
+  const pelicula = await getMovieById(req);
+  const userId = req.session.user?._id || req.payload.id;
+  const user = await User.findById(userId);
+
+  if (!user || user.role !== "admin") {
+    throw new HttpError(403, "No tenés permisos para modificar esta película");
+  }
+
+  if (!pelicula) {
+    throw new HttpError(404, "Película no encontrada");
+  }
+
+  await moviesModel.toggleBlockStatus(pelicula.id);
+
+  return pelicula.blocked ? "desbloqueada" : "bloqueada";
+};
+
 module.exports = {
   getMovies,
   getMovieById,
   createMovie,
   updateMovie,
   deleteMovie,
+  toggleBlockStatusMovie,
 };

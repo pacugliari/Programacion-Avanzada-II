@@ -5,6 +5,16 @@
   >
     <h1>Películas</h1>
     <div class="d-flex">
+      <% if (user && user.role === 'admin') { %>
+      <button
+        id="btnBlock"
+        class="btn btn-primary me-2 d-flex justify-content-center align-items-center"
+        disabled
+      >
+        <span class="material-icons">lock</span> Bloquear
+      </button>
+      <% } %>
+
       <button
         id="btnCreate"
         class="btn btn-success me-2 d-flex justify-content-center align-items-center"
@@ -36,6 +46,7 @@
       <div
         class="card h-100 shadow-sm movie-card"
         data-movie-id="<%= movie.id %>"
+        data-blocked="<%= movie.blocked %>"
       >
         <span href="/movies/<%= movie.id %>">
           <div
@@ -55,7 +66,7 @@
             class="card-title text-center d-flex justify-content-center align-items-center gap-2"
           >
             <span class="text-dark"><%= movie.titulo %></span>
-            <% if (user && user.role !== 'admin') { %>
+            <% if (movie.blocked) { %>
             <span class="material-icons text-danger" title="Película bloqueada"
               >lock</span
             >

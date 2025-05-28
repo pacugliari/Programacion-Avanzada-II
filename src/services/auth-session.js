@@ -60,7 +60,7 @@ const login = async (req,res) => {
       throw new HttpError(500, "No se pudo iniciar sesión", "auth/login");
     }
     req.session.user = userResponse;
-    res.redirect("movies/index");
+    return res.redirect("movies/index");
   });
 };
 
@@ -72,7 +72,7 @@ const logout = (req, res) => {
       throw new HttpError(500, "No se pudo cerrar sesión", "movies/index");
     }
     res.clearCookie("connect.sid");
-    res.redirect("auth/login");
+    return res.redirect("auth/login");
   });
 };
 
