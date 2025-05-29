@@ -163,7 +163,10 @@ const deleteMovie = async (req) => {
   }
 
   if (user.role !== "admin" && pelicula.blocked) {
-    throw new HttpError(403, "La película está bloqueada y no puede eliminarse");
+    throw new HttpError(
+      403,
+      "La película está bloqueada y no puede eliminarse"
+    );
   }
 
   if (pelicula.poster_id) {

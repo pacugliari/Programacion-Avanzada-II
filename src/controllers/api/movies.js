@@ -7,29 +7,29 @@ const {
 } = require("../../services/movies");
 
 const getMoviesController = async (req, res) => {
-  res.status(200).json({ payload: await getMovies(req) });
+  return res.status(200).json({ payload: await getMovies(req) });
 };
 
 const getMovieByIdController = async (req, res) => {
-  res.status(200).json({ payload: await getMovieById(req) });
+  return res.status(200).json({ payload: await getMovieById(req) });
 };
 
 const createMovieController = async (req, res) => {
-  res
+  return res
     .status(201)
     .json({ message: "Película creada", payload: await createMovie(req) });
 };
 
 const updateMovieController = async (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     message: "Película actualizada",
     payload: await updateMovie(req),
   });
 };
 
 const deleteMovieController = async (req, res) => {
-  await deleteMovie(pelicula);
-  res.status(200).json({ message: "Pelicula eliminada" });
+  await deleteMovie(req);
+  return res.status(200).json({ message: "Pelicula eliminada" });
 };
 
 module.exports = {
