@@ -1,7 +1,7 @@
-const categories = require("../models/categories");
+const {Category} = require("../models");
 
 const getCategories = async () => {
-  return await categories.getAll();
+  return await Category.findAll({ raw: true });
 };
 
 module.exports = {

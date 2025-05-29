@@ -1,7 +1,7 @@
-const actors = require("../models/actors");
+const {Actor} = require("../models");
 
 const getActors = async () => {
-  return await actors.getAll();
+  return await Actor.findAll({ raw: true });
 };
 
 module.exports = {

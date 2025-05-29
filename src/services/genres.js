@@ -1,7 +1,7 @@
-const genres = require("../models/genres");
+const { Category } = require("../models");
 
 const getGenres = async () => {
-  return await genres.getAll();
+  return await Category.findAll({ raw: true });
 };
 
 module.exports = {
