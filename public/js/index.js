@@ -26,9 +26,15 @@ function handleCardClick(card) {
   const btnBlock = document.getElementById("btnBlock");
   if (btnBlock) {
     if (blocked) {
-      btnBlock.innerHTML = `<span class="material-icons">lock_open</span> Desbloquear`;
+      btnBlock.innerHTML = `
+    <span class="material-icons">lock_open</span>
+    <span class="d-none d-md-inline">Desbloquear</span>
+  `;
     } else {
-      btnBlock.innerHTML = `<span class="material-icons">lock</span> Bloquear`;
+      btnBlock.innerHTML = `
+    <span class="material-icons">lock</span>
+    <span class="d-none d-md-inline">Bloquear</span>
+  `;
     }
   }
 }

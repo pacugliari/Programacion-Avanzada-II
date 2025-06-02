@@ -1,42 +1,46 @@
-<div class="flex-column bg-white card p-2 top-0 w-50">
+<div class="flex-column bg-white card p-2 top-0 col-12 col-md-6">
+  <!-- Header sticky -->
   <div
-    class="mb-4 d-flex align-items-center position-sticky p-2"
-    style="top: 0; z-index: 1000; background: white"
+    class="sticky-top bg-white d-flex align-items-center p-2 border-bottom"
+    style="z-index: 1030"
   >
-    <div class="d-flex">
-      <button
-        onclick="window.location.href='/movies'"
-        class="btn btn-secondary d-flex justify-content-center align-items-center"
-      >
-        <span class="material-icons me-2">arrow_back</span>
-      </button>
-    </div>
-    <h1 class="ms-3">Detalle Pelicula</h1>
+    <button
+      onclick="window.location.href='/movies'"
+      class="btn btn-secondary me-3 d-flex align-items-center"
+    >
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="h4 m-0">Detalle Película</h1>
   </div>
 
-  <div class="border rounded shadow">
-    <h2 class="mb-4 text-center"><%= movie.titulo %></h2>
+  <!-- Título -->
+  <h2 class="text-center mt-4"><%= movie.titulo %></h2>
 
+  <!-- Poster -->
   <div class="text-center mb-4">
     <img
       src="<%= movie.poster %>"
       alt="Poster de <%= movie.titulo %>"
-      class="img-fluid"
-      style="max-width: auto; height: 20rem"
+      class="img-fluid rounded shadow"
+      style="height: auto; max-height: 20rem"
     />
   </div>
 
+  <!-- Info -->
   <div class="row justify-content-center">
-    <div class="col-md-10">
+    <div class="col-12">
       <p><strong>Categoría:</strong> <%= movie.categoria[0].descripcion %></p>
+
       <p>
         <strong>Géneros:</strong>
         <% movie.generos.forEach(function(genero, index) { %> <%=
         genero.descripcion %><%= index < movie.generos.length - 1 ? ', ' : '' %>
         <% }); %>
       </p>
-      <p><strong>Resumen:</strong> <span><%= movie.resumen %></span></p>
-      <p><strong>Temporadas:</strong> <span><%= movie.temporadas %></span></p>
+
+      <p><strong>Resumen:</strong> <%= movie.resumen %></p>
+      <p><strong>Temporadas:</strong> <%= movie.temporadas %></p>
+
       <p>
         <strong>Reparto:</strong>
         <% movie.reparto.forEach(function(actor, index) { %> <%= actor.nombre
@@ -50,11 +54,11 @@
           href="<%= movie.trailer %>"
           target="_blank"
           class="btn btn-primary btn-sm"
-          >Ver trailer</a
         >
+          Ver trailer
+        </a>
       </p>
       <% } %>
     </div>
-  </div>
   </div>
 </div>

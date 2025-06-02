@@ -1,7 +1,7 @@
-const actors = require("../models/actors");
+const ActorRepository = require("../repositories/actor");
 
 const getActors = async () => {
-  return await actors.getAll();
+  return await ActorRepository.getAll();
 };
 
 module.exports = {

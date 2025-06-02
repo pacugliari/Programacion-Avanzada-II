@@ -1,7 +1,7 @@
-const categories = require("../models/categories");
+const CategoryRepository = require("../repositories/category");
 
 const getCategories = async () => {
-  return await categories.getAll();
+  return await CategoryRepository.getAll();
 };
 
 module.exports = {

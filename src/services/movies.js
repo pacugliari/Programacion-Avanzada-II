@@ -1,7 +1,13 @@
-const moviesModel = require("../models/movies");
-const categoriesModel = require("../models/categories");
-const genresModel = require("../models/genres");
-const actorsModel = require("../models/actors");
+const CatalogRepository = require("../repositories/catalog");
+const CategoryRepository = require("../repositories/category");
+const GenreRepository = require("../repositories/genre");
+const ActorRepository = require("../repositories/actor");
+const {
+  create,
+  deleteOne,
+  update,
+  toggleBlockStatus,
+} = require("../repositories/movies");
 const HttpError = require("../utils/http-error");
 const User = require("../models/user");
 const cloudinary = require("../config/cloudinary");
@@ -21,7 +27,7 @@ const validarDatosPelicula = async (data) => {
     throw new Error("El poster debe ser una imagen con extensión .jpg");
   }
 
-  const categoriaExiste = await categoriesModel.getOne({
+  const categoriaExiste = await CategoryRepository.getOne({
     idCategoria: category_id,
   });
   if (!categoriaExiste) {
@@ -33,7 +39,7 @@ const validarDatosPelicula = async (data) => {
   }
 
   for (const idGenero of genres) {
-    const existe = await genresModel.getOne({ idGenero });
+    const existe = await GenreRepository.getOne(idGenero);
     if (!existe) throw new Error(`El género con ID ${idGenero} no existe.`);
   }
 
@@ -42,13 +48,13 @@ const validarDatosPelicula = async (data) => {
   }
 
   for (const idActor of actors) {
-    const existe = await actorsModel.getOne({ idActor });
+    const existe = await ActorRepository.getOne(idActor);
     if (!existe) throw new Error(`El actor con ID ${idActor} no existe.`);
   }
 };
 
-const getMovies = async (req) => {
-  const movies = await moviesModel.getAll();
+const getMovies = async () => {
+  const movies = await CatalogRepository.getAll();
   return movies
     ? movies.map((p) => ({
         ...p,
@@ -61,7 +67,7 @@ const getMovies = async (req) => {
 
 const getMovieById = async (req) => {
   const { id } = req.params;
-  const pelicula = await moviesModel.getOne({ id });
+  const pelicula = await CatalogRepository.getOne({ id });
 
   if (!pelicula)
     throw new HttpError(400, "El ID no corresponde a una pelicula registrada");
@@ -96,7 +102,7 @@ const createMovie = async (req) => {
   };
 
   await validarDatosPelicula(data);
-  return await moviesModel.create(data);
+  return await create(data);
 };
 
 const updateMovie = async (req) => {
@@ -150,7 +156,7 @@ const updateMovie = async (req) => {
   };
 
   await validarDatosPelicula(data);
-  return await moviesModel.update(id, data);
+  return await update(id, data);
 };
 
 const deleteMovie = async (req) => {
@@ -163,14 +169,17 @@ const deleteMovie = async (req) => {
   }
 
   if (user.role !== "admin" && pelicula.blocked) {
-    throw new HttpError(403, "La película está bloqueada y no puede eliminarse");
+    throw new HttpError(
+      403,
+      "La película está bloqueada y no puede eliminarse"
+    );
   }
 
   if (pelicula.poster_id) {
     await cloudinary.uploader.destroy(pelicula.poster_id);
   }
 
-  return await moviesModel.deleteOne(pelicula.id);
+  return await deleteOne(pelicula.id);
 };
 
 const toggleBlockStatusMovie = async (req) => {
@@ -186,7 +195,7 @@ const toggleBlockStatusMovie = async (req) => {
     throw new HttpError(404, "Película no encontrada");
   }
 
-  await moviesModel.toggleBlockStatus(pelicula.id);
+  await toggleBlockStatus(pelicula.id);
 
   return pelicula.blocked ? "desbloqueada" : "bloqueada";
 };

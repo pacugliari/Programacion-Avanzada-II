@@ -1,4 +1,3 @@
-
 const { getMovies } = require("../services/movies");
 const cloudinary = require("../config/cloudinary");
 
@@ -9,13 +8,6 @@ const errorHandler = async (err, req, res, next) => {
   const message =
     err.message ?? "Se ha generado un error inesperado en el servidor.";
 
-  if (req.originalUrl.startsWith("/api")) {
-    return res.status(statusCode).json({
-      error: true,
-      message,
-    });
-  }
-
   if (req.file && req.file.filename) {
     try {
       await cloudinary.uploader.destroy(req.file.filename);
@@ -23,7 +15,14 @@ const errorHandler = async (err, req, res, next) => {
       console.error("Error borrando imagen en Cloudinary:", error);
     }
   }
-  
+
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(statusCode).json({
+      error: true,
+      message,
+    });
+  }
+
   res.status(statusCode).render(urlNavigation, {
     movies: await getMovies(req),
     title: title,
