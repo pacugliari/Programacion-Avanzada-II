@@ -1,7 +1,6 @@
-// models/Trailer.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
-const Movie = require('./Movie');
+const Movie = require('./movie');
 
 const Trailer = sequelize.define('Trailer', {
   idPeliculaTrailer: {

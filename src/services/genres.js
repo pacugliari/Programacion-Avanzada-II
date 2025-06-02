@@ -1,7 +1,7 @@
-const { Category } = require("../models");
+const GenreRepository = require("../repositories/genre");
 
 const getGenres = async () => {
-  return await Category.findAll({ raw: true });
+  return await GenreRepository.getAll();
 };
 
 module.exports = {

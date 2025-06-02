@@ -1,7 +1,5 @@
-// models/Movie.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/sequelize"); // tu instancia sequelize
-
+const sequelize = require("../config/sequelize");
 
 const Movie = sequelize.define(
   "Movie",

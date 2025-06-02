@@ -1,11 +1,10 @@
-// models/Genero.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/sequelize");
 
-const Genre = sequelize.define(
-  "Genre",
+const Category = sequelize.define(
+  "Category",
   {
-    idGenero: {
+    idCategoria: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -16,21 +15,11 @@ const Genre = sequelize.define(
     },
   },
   {
-    tableName: "generos",
+    tableName: "categorias",
     timestamps: false,
   }
 );
 
-const getAll = async () => {
-  return await Genre.findAll({ raw: true });
-};
-
-const getOne = async (params) => {
-  return await Genre.findOne({ where: params,raw: true});
-};
-
 module.exports = {
-  Genre,
-  getAll,
-  getOne,
+  Category,
 };

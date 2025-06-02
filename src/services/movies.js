@@ -1,10 +1,13 @@
-const { Movie, Catalog, Category, Genre, Actor } = require("../models");
+const CatalogRepository = require("../repositories/catalog");
+const CategoryRepository = require("../repositories/category");
+const GenreRepository = require("../repositories/genre");
+const ActorRepository = require("../repositories/actor");
 const {
   create,
   deleteOne,
   update,
   toggleBlockStatus,
-} = require("../services/sequelize/movies");
+} = require("../repositories/movies");
 const HttpError = require("../utils/http-error");
 const User = require("../models/user");
 const cloudinary = require("../config/cloudinary");
@@ -24,8 +27,8 @@ const validarDatosPelicula = async (data) => {
     throw new Error("El poster debe ser una imagen con extensión .jpg");
   }
 
-  const categoriaExiste = await Category.findOne({
-    where: { idCategoria: category_id },
+  const categoriaExiste = await CategoryRepository.getOne({
+    idCategoria: category_id,
   });
   if (!categoriaExiste) {
     throw new Error("La categoría especificada no existe.");
@@ -36,7 +39,7 @@ const validarDatosPelicula = async (data) => {
   }
 
   for (const idGenero of genres) {
-    const existe = await Genre.findOne({ where: { idGenero } });
+    const existe = await GenreRepository.getOne(idGenero);
     if (!existe) throw new Error(`El género con ID ${idGenero} no existe.`);
   }
 
@@ -45,13 +48,13 @@ const validarDatosPelicula = async (data) => {
   }
 
   for (const idActor of actors) {
-    const existe = await Actor.findOne({ where: { idActor } });
+    const existe = await ActorRepository.getOne(idActor);
     if (!existe) throw new Error(`El actor con ID ${idActor} no existe.`);
   }
 };
 
-const getMovies = async (req) => {
-  const movies = await Catalog.findAll({ raw: true });
+const getMovies = async () => {
+  const movies = await CatalogRepository.getAll();
   return movies
     ? movies.map((p) => ({
         ...p,
@@ -64,7 +67,7 @@ const getMovies = async (req) => {
 
 const getMovieById = async (req) => {
   const { id } = req.params;
-  const pelicula = await Catalog.findOne({ where: { id }, raw: true });
+  const pelicula = await CatalogRepository.getOne({ id });
 
   if (!pelicula)
     throw new HttpError(400, "El ID no corresponde a una pelicula registrada");

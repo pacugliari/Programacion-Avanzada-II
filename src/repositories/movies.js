@@ -1,5 +1,5 @@
-const { Movie, Trailer } = require("../../models");
-const sequelize = require("../../config/sequelize");
+const { Movie, Trailer } = require("../models");
+const sequelize = require("../config/sequelize");
 
 const create = async (data) => {
   const {
@@ -17,7 +17,6 @@ const create = async (data) => {
   const t = await sequelize.transaction();
 
   try {
-    // Crear la película
     const pelicula = await Movie.create(
       {
         titulo: title,
@@ -30,17 +29,14 @@ const create = async (data) => {
       { transaction: t }
     );
 
-    // Asociar actores
     if (actors && actors.length > 0) {
       await pelicula.setActors(actors, { transaction: t });
     }
 
-    // Asociar géneros
     if (genres && genres.length > 0) {
       await pelicula.setGenres(genres, { transaction: t });
     }
 
-    // Crear trailer
     await Trailer.create(
       {
         idPelicula: pelicula.idPelicula,
@@ -68,7 +64,6 @@ const deleteOne = async (id) => {
       return false;
     }
 
-    // Sequelize maneja el borrado en cascada o manualmente:
     await pelicula.setActors([], { transaction: t });
     await pelicula.setGenres([], { transaction: t });
     await Trailer.destroy({ where: { idPelicula: id }, transaction: t });
@@ -131,7 +126,6 @@ const update = async (id, data) => {
       { transaction: t }
     );
 
-    // Limpiar relaciones previas y setear nuevas
     if (actors && Array.isArray(actors)) {
       await pelicula.setActors(actors, { transaction: t });
     } else {
@@ -144,7 +138,6 @@ const update = async (id, data) => {
       await pelicula.setGenres([], { transaction: t });
     }
 
-    // Actualizar trailer
     const trailerUrl = trailer || "N/A";
     const existingTrailer = await Trailer.findOne({
       where: { idPelicula: id },

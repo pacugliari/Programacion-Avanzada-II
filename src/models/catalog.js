@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/sequelize"); // Ajusta a tu configuración
+const sequelize = require("../config/sequelize");
 
 const Catalog = sequelize.define(
   "Catalog",
@@ -10,7 +10,7 @@ const Catalog = sequelize.define(
       autoIncrement: true,
     },
     poster: {
-      type: DataTypes.STRING, // URL string
+      type: DataTypes.STRING,
       allowNull: false,
     },
     poster_id: {
@@ -28,11 +28,11 @@ const Catalog = sequelize.define(
       defaultValue: false,
     },
     categoria: {
-      type: DataTypes.JSON, // Guardamos JSON directamente
+      type: DataTypes.JSON,
       allowNull: true,
     },
     resumen: {
-      type: DataTypes.TEXT, // Texto largo
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     temporadas: {
@@ -40,20 +40,20 @@ const Catalog = sequelize.define(
       allowNull: true,
     },
     generos: {
-      type: DataTypes.JSON, // JSON con array de géneros
+      type: DataTypes.JSON,
       allowNull: true,
     },
     reparto: {
-      type: DataTypes.JSON, // JSON con array de reparto
+      type: DataTypes.JSON,
       allowNull: true,
     },
     trailer: {
-      type: DataTypes.STRING, // URL o "N/A"
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
   {
-    tableName: "catalogo", // nombre de la tabla en la base de datos
+    tableName: "catalogo",
     timestamps: false,
     createdAt: false,
     updatedAt: false,
@@ -61,17 +61,6 @@ const Catalog = sequelize.define(
   }
 );
 
-const getAll = async () => {
-  return await Catalog.findAll({ raw: true });
-};
-
-const getOne = async (params) => {
-  return await Catalog.findOne({where: params,raw: true});
-};
-
 module.exports = {
   Catalog,
-  getAll,
-  getOne,
 };
-
