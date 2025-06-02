@@ -1,40 +1,48 @@
 <div class="flex-column bg-white card p-2">
-  <div
-    class="mb-4 d-flex justify-content-between position-sticky p-2"
-    style="top: 0; z-index: 1000; background: white"
-  >
-    <h1>Películas</h1>
-    <div class="d-flex">
-      <% if (user && user.role === 'admin') { %>
-      <button
-        id="btnBlock"
-        class="btn btn-primary me-2 d-flex justify-content-center align-items-center"
-        disabled
-      >
-        <span class="material-icons">lock</span> Bloquear
-      </button>
-      <% } %>
-
-      <button
-        id="btnCreate"
-        class="btn btn-success me-2 d-flex justify-content-center align-items-center"
-      >
-        <span class="material-icons">add</span> Crear
-      </button>
-      <button
-        id="btnModify"
-        class="btn btn-warning me-2 d-flex justify-content-center align-items-center"
-        disabled
-      >
-        <span class="material-icons">edit</span> Modificar
-      </button>
-      <button
-        id="btnDelete"
-        class="btn btn-danger d-flex justify-content-center align-items-center"
-        disabled
-      >
-        <span class="material-icons">delete</span> Eliminar
-      </button>
+  <div class="mb-4 p-2 sticky-top bg-white" style="z-index: 1000">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+          <h1 class="mb-0">Películas</h1>
+        </div>
+        <div
+          class="col-12 col-md-6 d-flex flex-wrap justify-content-md-end gap-2"
+        >
+          <% if (user && user.role === 'admin') { %>
+          <button
+            id="btnBlock"
+            class="btn btn-primary d-flex align-items-center"
+            disabled
+          >
+            <span class="material-icons me-1">lock</span>
+            <span class="d-none d-md-inline">Bloquear</span>
+          </button>
+          <% } %>
+          <button
+            id="btnCreate"
+            class="btn btn-success d-flex align-items-center"
+          >
+            <span class="material-icons me-1">add</span>
+            <span class="d-none d-md-inline">Crear</span>
+          </button>
+          <button
+            id="btnModify"
+            class="btn btn-warning d-flex align-items-center"
+            disabled
+          >
+            <span class="material-icons me-1">edit</span>
+            <span class="d-none d-md-inline">Modificar</span>
+          </button>
+          <button
+            id="btnDelete"
+            class="btn btn-danger d-flex align-items-center"
+            disabled
+          >
+            <span class="material-icons me-1">delete</span>
+            <span class="d-none d-md-inline">Eliminar</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
