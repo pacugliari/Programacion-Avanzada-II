@@ -143,7 +143,7 @@ Asegúrate de que tu instancia de MongoDB esté corriendo. Mongoose típicamente
 1.  Asegúrate de que tu servidor MySQL esté corriendo y accesible.
 2.  Crea la base de datos especificada en la variable de entorno `DB_NAME`.
 3.  La aplicación usa Sequelize para definir modelos para `actores`, `categorias`, `generos`, `peliculas`, `peliculastrailers`. Estas tablas necesitan ser creadas en tu base de datos MySQL.
-    - **Nota Importante**: En la carpeta `docs/` del repositorio (que deberás crear si no existe y donde alojarás el archivo), encontrarás un archivo de volcado SQL (`dump.sql` o similar). Este archivo contiene los scripts necesarios para crear el esquema completo de la base de datos MySQL, incluyendo todas las tablas requeridas y sus relaciones, así como la vista `catalogo`. Puedes importar este archivo directamente en tu servidor MySQL para configurar la estructura de la base de datos rápidamente.
+    - **Nota Importante**: En la carpeta `docs/` del repositorio, encontrarás un archivo de volcado SQL (`dump.sql` o similar). Este archivo contiene los scripts necesarios para crear el esquema completo de la base de datos MySQL, incluyendo todas las tablas requeridas y sus relaciones, así como la vista `catalogo`. Puedes importar este archivo directamente en tu servidor MySQL para configurar la estructura de la base de datos rápidamente.
 4.  El modelo `Catalog` (`src/models/catalog.js`) interactúa con una vista o tabla de base de datos llamada `catalogo`. Esta vista desnormaliza datos de otras tablas (películas, géneros, actores, categorías, tráilers) para facilitar las consultas del catálogo de películas. La creación de esta vista está incluida en el archivo de volcado SQL mencionado anteriormente.
     Si prefieres crear la vista manualmente, aquí tienes un ejemplo de su estructura (aunque se recomienda usar el `dump`):
     ```sql
@@ -253,29 +253,27 @@ Programacion-Avanzada-II/
 Todos los endpoints de la API están prefijados con `/api`.
 Los endpoints bajo `/api/movies`, `/api/genres`, `/api/categories`, `/api/actors` requieren autenticación mediante token JWT Bearer.
 
-- **Autenticación (`/api/auth`)**
+**Nota Importante**: En la carpeta `docs/` del repositorio, encontrarás una **colección de Postman** (`TRAILERFLIX.postman_collection.json` o similar). Esta colección contiene ejemplos de todas las solicitudes a los endpoints de la API, preconfigurados para facilitar las pruebas. Deberás configurar las variables de entorno en Postman (como la URL base y el token JWT después de autenticarte) para usarla correctamente.
 
-  - `POST /register`: Registrar un nuevo usuario. Devuelve un JWT.
-  - `POST /login`: Iniciar sesión de un usuario existente. Devuelve un JWT.
+* **Autenticación (`/api/auth`)**
+    * `POST /register`: Registrar un nuevo usuario. Devuelve un JWT.
+    * `POST /login`: Iniciar sesión de un usuario existente. Devuelve un JWT.
 
-- **Películas (`/api/movies`)**
+* **Películas (`/api/movies`)**
+    * `GET /`: Obtener una lista de todas las películas.
+    * `GET /:id`: Obtener una película específica por su ID.
+    * `POST /`: Crear una nueva película. Espera `multipart/form-data` incluyendo un archivo de imagen `poster`.
+    * `PUT /:id`: Actualizar una película existente por ID. Espera `multipart/form-data` si se actualiza el `poster`.
+    * `DELETE /:id`: Eliminar una película por ID.
 
-  - `GET /`: Obtener una lista de todas las películas.
-  - `GET /:id`: Obtener una película específica por su ID.
-  - `POST /`: Crear una nueva película. Espera `multipart/form-data` incluyendo un archivo de imagen `poster`.
-  - `PUT /:id`: Actualizar una película existente por ID. Espera `multipart/form-data` si se actualiza el `poster`.
-  - `DELETE /:id`: Eliminar una película por ID.
+* **Actores (`/api/actors`)**
+    * `GET /`: Obtener una lista de todos los actores.
 
-- **Actores (`/api/actors`)**
+* **Géneros (`/api/genres`)**
+    * `GET /`: Obtener una lista de todos los géneros.
 
-  - `GET /`: Obtener una lista de todos los actores.
-
-- **Géneros (`/api/genres`)**
-
-  - `GET /`: Obtener una lista de todos los géneros.
-
-- **Categorías (`/api/categories`)**
-  - `GET /`: Obtener una lista de todas las categorías.
+* **Categorías (`/api/categories`)**
+    * `GET /`: Obtener una lista de todas las categorías.
 
 ## Rutas del Monolito (Vistas)
 
