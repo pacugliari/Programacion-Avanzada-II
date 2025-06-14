@@ -29,11 +29,10 @@ const register = async (req) => {
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({ email, password: hashed, name });
 
-  return await signToken({
-    id: user._id.toString(),
-    email: user.email,
-    role: user.role,
-  });
+  return {
+    error: false,
+    message: "Usuario registrado correctamente",
+  };
 };
 
 const login = async (req) => {
@@ -48,11 +47,20 @@ const login = async (req) => {
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) throw new HttpError(400, "Credenciales inválidas");
 
-  return await signToken({
-    id: user._id.toString(),
-    email: user.email,
-    role: user.role,
-  });
+  const userResponse = { ...user.toObject() };
+  delete userResponse.password;
+  return {
+    token: await signToken({
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    }),
+    user: {
+      email: userResponse.email,
+      role: userResponse.role,
+      name: userResponse.name,
+    },
+  };
 };
 
 module.exports = {
