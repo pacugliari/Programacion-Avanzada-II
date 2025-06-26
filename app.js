@@ -7,7 +7,6 @@ const methodOverride = require("method-override");
 const expressLayouts = require("express-ejs-layouts");
 const connectDB = require("./src/config/mongo");
 const dotenv = require("dotenv");
-const cors = require('cors');
 const env = process.env.NODE_ENV || "development";
 dotenv.config({ path: `.env.${env}` });
 
@@ -26,6 +25,7 @@ const monolithAuthRoutes = require("./src/routes/monolith/auth");
 const errorHandler = require("./src/middlewares/http-error");
 const auth = require("./src/middlewares/auth");
 const { sessionMiddleware, userState } = require("./src/middlewares/session");
+const corsMiddleware = require('./src/middlewares/cors');
 
 // =======================
 // 🚀 Inicialización
@@ -42,9 +42,7 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 app.use(sessionMiddleware);
 app.use(userState);
-app.use(cors({
-  origin: 'http://localhost:5173', // O '*' para desarrollo (no recomendado en producción)
-}));
+app.use(corsMiddleware);
 
 // =======================
 // 🎨 Configuración de vistas
