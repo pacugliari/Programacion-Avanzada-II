@@ -6,36 +6,70 @@ const {
   deleteMovie,
   toggleBlockStatusMovie,
 } = require("../../services/movies");
+const ResponseBuilder = require("../../utils/api-response");
 
 const getMoviesController = async (req, res) => {
-  return res.status(200).json({ payload: await getMovies(req) });
+  return res
+    .status(200)
+    .json(
+      ResponseBuilder.success(
+        await getMovies(req),
+        "Lista de películas obtenida exitosamente"
+      )
+    );
 };
 
 const getMovieByIdController = async (req, res) => {
-  return res.status(200).json({ payload: await getMovieById(req) });
+  return res
+    .status(200)
+    .json(
+      ResponseBuilder.success(
+        await getMovieById(req),
+        "Película obtenida exitosamente"
+      )
+    );
 };
 
 const createMovieController = async (req, res) => {
   return res
     .status(201)
-    .json({ message: "Película creada", payload: await createMovie(req) });
+    .json(
+      ResponseBuilder.success(
+        await createMovie(req),
+        "Película creada exitosamente",
+        201
+      )
+    );
 };
 
 const updateMovieController = async (req, res) => {
-  return res.status(200).json({
-    message: "Película actualizada",
-    payload: await updateMovie(req),
-  });
+  return res
+    .status(200)
+    .json(
+      ResponseBuilder.success(
+        await updateMovie(req),
+        "Película actualizada exitosamente"
+      )
+    );
 };
 
 const deleteMovieController = async (req, res) => {
   await deleteMovie(req);
-  return res.status(200).json({ message: "Pelicula eliminada" });
+  return res
+    .status(200)
+    .json(ResponseBuilder.success(null, "Película eliminada exitosamente"));
 };
 
 const blockMovieController = async (req, res) => {
   const status = await toggleBlockStatusMovie(req);
-  return res.status(200).json({ message: `Película ${status} exitosamente` });
+  return res
+    .status(200)
+    .json(
+      ResponseBuilder.success(
+        null,
+        `Película ${status} exitosamente`
+      )
+    );
 };
 
 module.exports = {
