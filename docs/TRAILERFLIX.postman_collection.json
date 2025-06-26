@@ -206,7 +206,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3001/api/movies/1",
+					"raw": "http://localhost:3001/api/movies/100",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -215,7 +215,7 @@
 					"path": [
 						"api",
 						"movies",
-						"1"
+						"100"
 					]
 				}
 			},
@@ -237,7 +237,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3001/api/movies/1",
+					"raw": "http://localhost:3001/api/movies/87",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -246,7 +246,7 @@
 					"path": [
 						"api",
 						"movies",
-						"1"
+						"87"
 					],
 					"query": [
 						{
@@ -276,7 +276,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n        \"poster\": \"https://res.cloudinary.com/doypmjt76/image/upload/v1748286707/1_n1gtfs.jpg\",\r\n        \"title\": \"The Crown\",\r\n        \"category_id\": [1],\r\n        \"summary\": \"Este drama narra las rivalidades políticas y el romance de la reina Isabel II, así como los sucesos que moldearon la segunda mitad del siglo XX.\",\r\n        \"temporadas\": \"4\",\r\n        \"genres\": [3,7],\r\n        \"actors\": [ 25,27,29,26,28,30],\r\n        \"trailer\": \"N/A\"\r\n}",
+					"raw": "{\r\n        \"poster\": \"https://res.cloudinary.com/doypmjt76/image/upload/v1748286707/1_n1gtfs.jpg\",\r\n        \"title\": \"MODIFICADA DESDE POSTMAN\",\r\n        \"category_id\": [1],\r\n        \"summary\": \"Este drama narra las rivalidades políticas y el romance de la reina Isabel II, así como los sucesos que moldearon la segunda mitad del siglo XX.\",\r\n        \"temporadas\": \"4\",\r\n        \"genres\": [3,7],\r\n        \"actors\": [ 25,27,29,26,28,30],\r\n        \"trailer\": \"N/A\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -284,7 +284,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3001/api/movies/1",
+					"raw": "http://localhost:3001/api/movies/87",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -293,7 +293,7 @@
 					"path": [
 						"api",
 						"movies",
-						"1"
+						"87"
 					],
 					"query": [
 						{
@@ -371,6 +371,85 @@
 					"path": [
 						"api",
 						"movies"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BLOCK",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "CREADA DESDE POSTMAN",
+							"type": "text"
+						},
+						{
+							"key": "category_id[]",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "summary",
+							"value": "Este drama narra las rivalidades políticas y el romance de la reina Isabel II, así como los sucesos que moldearon la segunda mitad del siglo XX.",
+							"type": "text"
+						},
+						{
+							"key": "genres[]",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "actors[]",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "trailer",
+							"value": "N/A",
+							"type": "text"
+						},
+						{
+							"key": "poster",
+							"type": "file",
+							"src": "/C:/Users/Trabajo/Desktop/Imagenes/1.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/movies/block/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"movies",
+						"block",
+						"1"
 					],
 					"query": [
 						{

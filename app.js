@@ -7,7 +7,7 @@ const methodOverride = require("method-override");
 const expressLayouts = require("express-ejs-layouts");
 const connectDB = require("./src/config/mongo");
 const dotenv = require("dotenv");
-
+const cors = require('cors');
 const env = process.env.NODE_ENV || "development";
 dotenv.config({ path: `.env.${env}` });
 
@@ -42,6 +42,9 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 app.use(sessionMiddleware);
 app.use(userState);
+app.use(cors({
+  origin: 'http://localhost:5173', // O '*' para desarrollo (no recomendado en producción)
+}));
 
 // =======================
 // 🎨 Configuración de vistas

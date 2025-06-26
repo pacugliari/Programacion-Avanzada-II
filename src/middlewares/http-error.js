@@ -1,8 +1,10 @@
 const { getMovies } = require("../services/movies");
 const cloudinary = require("../config/cloudinary");
+const ResponseBuilder = require("../utils/api-response");
 
 const errorHandler = async (err, req, res, next) => {
   const statusCode = err.statusCode ?? 500;
+  const errors = err.errors ?? [];
   const urlNavigation = err.urlNavigation ?? "movies/index";
   const title = err.title ?? "Lista de películas";
   const message =
@@ -17,10 +19,9 @@ const errorHandler = async (err, req, res, next) => {
   }
 
   if (req.originalUrl.startsWith("/api")) {
-    return res.status(statusCode).json({
-      error: true,
-      message,
-    });
+    return res
+      .status(statusCode)
+      .json(ResponseBuilder.error(message, errors, statusCode));
   }
 
   res.status(statusCode).render(urlNavigation, {

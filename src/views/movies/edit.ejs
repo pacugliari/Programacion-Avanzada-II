@@ -83,7 +83,7 @@
       <% categories.forEach(function(category) { %>
     <option
       value="<%= category.idCategoria %>"
-      <%= movie.categoria.some(c => c.id === category.idCategoria) ? 'selected' : '' %>
+      <%= movie.categoria.some(c => c.idCategoria === category.idCategoria) ? 'selected' : '' %>
     >
       <%= category.descripcion %>
     </option>
@@ -123,7 +123,7 @@
       <% genres.forEach(function(genre) { %>
       <option
         value="<%= genre.idGenero %>"
-        <%= movie.generos.some(g => g.id === genre.idGenero) ? 'selected' : '' %>
+        <%= movie.generos.some(g => g.idGenero === genre.idGenero) ? 'selected' : '' %>
       >
         <%= genre.descripcion %>
       </option>
@@ -139,7 +139,7 @@
       <% actors.forEach(function(actor) { %>
       <option
         value="<%= actor.idActor %>"
-        <%= movie.reparto.some(a => a.id === actor.idActor) ? 'selected' : '' %>
+        <%= movie.reparto.some(a => a.idActor === actor.idActor) ? 'selected' : '' %>
       >
         <%= actor.nombre %>
       </option>
