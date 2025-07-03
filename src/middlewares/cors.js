@@ -1,16 +1,14 @@
 const cors = require("cors");
 const HttpError = require("../utils/http-error");
+const dotenv = require("dotenv");
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3001",
-  "https://programacion-avanzada-ii-production.up.railway.app",
-  "https://programacion-avanzada-ii-react.vercel.app",
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",").map(o => o.trim()) || [];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+          if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(
