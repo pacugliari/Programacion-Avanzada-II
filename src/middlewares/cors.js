@@ -4,6 +4,7 @@ const HttpError = require("../utils/http-error");
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3001",
+  "https://programacion-avanzada-ii-production.up.railway.app",
   "https://programacion-avanzada-ii-react.vercel.app",
 ];
 
